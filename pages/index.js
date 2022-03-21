@@ -42,8 +42,8 @@ export default function Home({ posts }) {
             {posts.map(({ _id, fileName, title, author, date }) => (
               <li className={utilStyles.listItem} key={_id}>
                 <Link href={`/posts/${fileName}`}>
-                  {/* <a><span>{title}</span><span className={utilStyles.lightText}> {text.index.by} {author}</span></a> */}
-                  <a><span className={utilStyles.lightText}> <Date dateString={date} /></span> <span>{title}</span></a>
+                  <a><span>{title}</span><span className={utilStyles.lightText}> {text.index.by} {author}</span></a>
+                  {/* <a><span className={utilStyles.lightText}> <Date dateString={date} /></span> <span>{title}</span></a> */}
                 </Link>
               </li>
             ))}
