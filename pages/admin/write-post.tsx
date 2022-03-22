@@ -12,6 +12,7 @@ import Restricted from "../../components/restricted";
 
 import styles from '../../styles/dashboard.module.css'
 import utilStyles from '../../styles/utils.module.css'
+import addPostStyles from '../../components/addPostForm.module.css'
 
 import { text } from '../../lib/data'
 
@@ -37,23 +38,51 @@ const SAVE_TOKEN = process.env.NEXT_PUBLIC_SAVE_TOKEN;
 export default function WritePost() {
     const { data: session } = useSession()
 
-    const [value, setValue] = useState(`${text.writePost.title}`);
+    const textGuides = {
+        title: text.writePost.title,
+        body: text.writePost.body
+    }
+
+    const [value, setValue] = useState(`${textGuides.title} \n ${textGuides.body}`);
+    const [authorName, setAuthorName] = useState()
+    const [description, setDescription] = useState()
     const [status, setStatus] = useState();
     const [published, setPublished] = useState();
 
 
     useEffect(() => {
-        if (JSON.parse(localStorage.getItem('blogText'))) {
-            setValue(JSON.parse(localStorage.getItem('blogText')))
+        if (JSON.parse(localStorage.getItem('postText'))) {
+            setValue(JSON.parse(localStorage.getItem('postText')))
+        }
+        if (JSON.parse(localStorage.getItem('postAuthor'))) {
+            setAuthorName(JSON.parse(localStorage.getItem('postAuthor')))
+        }
+        if (JSON.parse(localStorage.getItem('postDescription'))) {
+            setDescription(JSON.parse(localStorage.getItem('postDescription')))
         }
     }, [])
 
     const handleChange = (e) => {
         localStorage.setItem(
-            'blogText',
+            'postText',
             JSON.stringify(e)
         );
         setValue(e)
+    }
+
+    const handleFormChange = (e) => {
+        const authorName = e.target.form.author.value;
+        const description = e.target.form.description.value;
+        localStorage.setItem(
+            'postAuthor',
+            JSON.stringify(authorName)
+        );
+        localStorage.setItem(
+            'postDescription',
+            JSON.stringify(description)
+        );
+        setAuthorName(authorName)
+        setDescription(description)
     }
 
 
@@ -65,8 +94,9 @@ export default function WritePost() {
         e.preventDefault()
 
         const rawData = {
-            authorName: "Demo Author",
             fileContent: value,
+            authorName: authorName || "Default",
+            description: description || ""
         }
 
         const format = await fetch(`${BASE_URL}/format-data`, {
@@ -81,9 +111,7 @@ export default function WritePost() {
 
         if (!format.ok) {
             if (format.status === 409) {
-
                 const errorMsg = await format.json();
-                console.log(errorMsg.title)
                 if (errorMsg.title === "missing") {
                     setStatus({ alert: "bodyAlert", message: `${text.writePost.missingTitle}` })
                     return
@@ -117,7 +145,9 @@ export default function WritePost() {
         })
 
         if (publish.ok) {
-            localStorage.removeItem('blogText')
+            localStorage.removeItem('postText')
+            localStorage.removeItem('postAuthor')
+            localStorage.removeItem('postDescription')
             setStatus({ alert: "messageAlert", message: `${text.writePost.postPublished}` })
             setPublished(true)
         } else {
@@ -144,6 +174,12 @@ export default function WritePost() {
                                 <Alert data={status} cancelAction={cancelAction} downloadFile={undefined} deletePost={undefined} resetCounter={undefined} />
                             ) : null}
                             <div>
+                                <form className={addPostStyles.form} onChange={handleFormChange} encType="multipart/form-data">
+                                    <label htmlFor="author">{text.addPostForm.authorName}</label>
+                                    <input type="text" name="author" placeholder={`(${text.addPostForm.optional})`} value={authorName} />
+                                    <label htmlFor="description">{text.addPostForm.description}</label>
+                                    <textarea id="description" name="description" placeholder={`(${text.addPostForm.optional})`} value={description} />
+                                </form>
                                 <MDEditor className={styles.editor} value={value} onChange={handleChange} textareaProps={{ spellCheck: true }}
                                     previewOptions={{
                                         rehypePlugins: [[rehypeSanitize]]
