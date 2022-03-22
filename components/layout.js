@@ -61,11 +61,11 @@ export default function Layout({ children, home, post, dashboard }) {
                     </Link>
                 )}
 
-                <Link href={`${data.contactUrl}`}>
+                {/* <Link href={`${data.contactUrl}`}>
                     <a className={styles.chat} target="_blank" rel="no-referrer">
                         {text.layout.comment}
                     </a>
-                </Link>
+                </Link> */}
                 <Link href="/admin/dashboard">
                     <a>
                         <LogoAdmin />
