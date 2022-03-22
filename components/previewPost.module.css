@@ -24,8 +24,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  border: 1px solid red;
-  background-color: rgb(253, 255, 255)
+  border: 1px solid blue;
+  background-color: rgb(253, 255, 255);
+  padding: 0rem .15rem;
 }
 
 .container h4 {
@@ -50,24 +51,14 @@
     align-items: center;   
 }
 
-.btnContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-}
-
-.btnContainer label {
-  font-weight: 300;
-}
-
-
 .articleContainer {
-    margin: 1rem 0rem;
+    margin: .1rem 0rem;
     padding: 10px 10px;
     background-color: white;
-    border: 1px solid rgb(194, 190, 190);
+    border-top: 1px solid rgb(194, 190, 190);
     height: 100vh;
     overflow-y: scroll;
+    border-radius: 10px;
 }
 
 .list {
@@ -79,6 +70,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    border: 1px solid green;
   }
   
   .listItem {
@@ -89,6 +81,21 @@
   .listItem a {
       color: black;
   }
+
+  .btnContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    padding: 1rem 1rem;
+    border-radius: 10px;
+    border: 1px solid red;    
+}
+
+.btnContainer label {
+  font-weight: 300;
+}
 
   @media (max-width: 700px){
     .listItem span {
