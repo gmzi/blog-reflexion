@@ -28,10 +28,10 @@ export default function Layout({ children, home, dashboard }) {
             <nav className={styles.nav}>
                 {dashboard ? (
                     // eslint-disable-next-line @next/next/no-html-link-for-pages
-                    <a href="/"><Logo /></a>
+                    <a className={styles.logoLink} href="/"><Logo /></a>
                 ) : (
                     <Link href="/">
-                        <a>
+                        <a className={styles.logoLink}>
                             <Logo />
                         </a>
                     </Link>

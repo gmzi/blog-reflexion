@@ -7,6 +7,10 @@
     margin: 0rem;
 }
 
+.logoLink:hover {
+  text-decoration: none;
+}
+
 .nav a {
     font-weight: 200;
     margin: 0;

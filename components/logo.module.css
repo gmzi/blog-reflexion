@@ -1,7 +1,8 @@
 .container { 
   border-radius: 3px;
-  padding: .4rem 0rem;
+  padding: .4rem .2rem;
 }
+
 .container:hover {
   background-color: rgb(217, 217, 233);;
   text-decoration: none;
@@ -9,10 +10,6 @@
 
 .title,
 .subtitle {
-    /* display: inline-flex; */
-    /* align-items: center; */
-    /* height: 30px;
-    line-height: 20px; */
     color: black;
     display: flex;
     flex-direction: row;
