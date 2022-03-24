@@ -52,20 +52,20 @@ export default function Layout({ children, home, post, dashboard }) {
             <nav className={styles.nav}>
                 {dashboard ? (
                     // eslint-disable-next-line @next/next/no-html-link-for-pages
-                    <a href="/"><Logo /></a>
+                    <a className={styles.logoLink} href="/"><Logo /></a>
                 ) : (
                     <Link href="/">
-                        <a>
+                        <a className={styles.logoLink}>
                             <Logo />
                         </a>
                     </Link>
                 )}
 
-                <Link href={`${data.contactUrl}`}>
+                {/* <Link href={`${data.contactUrl}`}>
                     <a className={styles.chat} target="_blank" rel="no-referrer">
                         {text.layout.comment}
                     </a>
-                </Link>
+                </Link> */}
                 <Link href="/admin/dashboard">
                     <a>
                         <LogoAdmin />
