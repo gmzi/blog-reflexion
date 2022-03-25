@@ -1,3 +1,8 @@
+# Local command:
+
+To pull latest changes from blog-template repo:
+`git pull origin blog-reflexion`
+
 # Branches
 
 1. Create a new branch for each new user.
