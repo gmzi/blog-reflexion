@@ -1,5 +1,22 @@
+.headingLg {
+  font-size: 1.5rem;
+}
+
 .post {
   position: relative;
+}
+
+.headingLg,
+.post h2, 
+.post h3 {
+  line-height: 1.4;
+  margin: 3rem 0 3rem 0;
+}
+
+.post hr {
+  border: none;
+  border-top: 1px solid #eaeaea;
+  margin: 3rem 0;
 }
 
 .post img {
