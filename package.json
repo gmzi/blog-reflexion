@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "node ./lib/makeRobots.js",
     "start": "next start",
     "lint": "next lint"
   },
