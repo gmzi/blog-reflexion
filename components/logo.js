@@ -1,5 +1,4 @@
 import styles from './logo.module.css'
-import { data } from '../lib/data'
 
 const Logo = () => (
   <div className={styles.container}>

@@ -16,17 +16,19 @@ export default function Post({ post }) {
             const data = {
                 id: post.id
             }
-            const res = await fetch(`${API_URL}/update-counter`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                referrerPolicy: 'no-referrer',
-                body: JSON.stringify(data)
-            })
+            try{
+                const res = await fetch(`${API_URL}/update-counter`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    referrerPolicy: 'no-referrer',
+                    body: JSON.stringify(data)
+                })
+            }catch(e){}
         }
         updateVisits()
-    }, [])
+    }, [post.id])
 
     if (!post) {
         return (
