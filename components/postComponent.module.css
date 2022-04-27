@@ -13,13 +13,6 @@
   margin: 3rem 0 3rem 0;
 }
 
-/* Notes section */
-.post section h2 {
-  border-top: 1px solid #eaeaea;
-  margin: 3rem 0 1rem 0;
-  padding: 1rem 0rem;
-}
-
 .post hr {
   border: none;
   border-top: 1px solid #eaeaea;
@@ -41,4 +34,11 @@
 
 .post a {
   color: rgb(0, 0, 173);
+}
+
+/* Notes section */
+.post section h2 {
+  border-top: 1px solid #eaeaea;
+  margin: 3rem 0 1rem 0;
+  padding: 1rem 0rem;
 }

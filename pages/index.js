@@ -11,20 +11,14 @@ import { connectToDatabase } from '../lib/mongodb'
 import { data, text } from '../lib/data'
 
 const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION;
-const URL = process.env.NEXT_PUBLIC_URL;
 
 export default function Home({ posts }) {
 
 
   return (
     <Layout home>
-      <Head>
-        {/* OpenGraph */}
-        <meta property="og:type" content="index" />
-
-        <title>{data.title}</title>
-      </Head>
       <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+        <h1 style={{display: "none"}}>{data.title}</h1>
         {!posts.length ? (
           <p>No posts yet...</p>
         ) : (
@@ -46,7 +40,7 @@ export default function Home({ posts }) {
 
 export async function getStaticProps() {
   const { db } = await connectToDatabase();
-
+  
   const query = {}
   const sort = { date: -1, fileName: 1 }
 
