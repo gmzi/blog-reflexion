@@ -3,7 +3,6 @@ import styles from './logo.module.css'
 const Logo = () => (
   <div className={"logoContainer"}>
     <span className={"logoTitle"}>
-      <span className="logoName">
         <div className={styles.charContainer}>
           <span className={styles.char}>
             R
@@ -21,7 +20,6 @@ const Logo = () => (
         <span>
           reflexión en música
         </span>
-      </span>
     </span>
   </div >
 );

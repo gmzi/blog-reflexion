@@ -3,7 +3,7 @@ import Date from '../components/date'
 import Layout from '../components/layout'
 import utilStyles from '../styles/utils.module.css'
 import { connectToDatabase } from '../lib/mongodb'
-import { data } from '../lib/data'
+import { data, text } from '../lib/data'
 
 const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION;
 
@@ -21,11 +21,8 @@ export default function Home({ posts }) {
               <li className={utilStyles.listItem} key={_id}>
                 <div className={utilStyles.titleContainer}>
                   <Link href={`/posts/${fileName}`}>
-                    <a><span>{title}</span></a>
+                    <a><span>{title}</span> <span className="postDate">{text.index.by} {author}</span></a>
                   </Link>
-                </div>
-                <div className={utilStyles.dateContainer}>
-                  <span className="postDate">{text.index.by} {author}</span>
                 </div>
               </li>
             ))}

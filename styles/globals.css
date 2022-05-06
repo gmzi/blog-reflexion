@@ -10,23 +10,6 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
-.logoContainer { 
-  border-radius: 3px;
-  padding: .8rem 0rem;
-}
-
-.logoContainer:hover {
-text-decoration: var(--color-hover);
-}
-
-.logoContainer .svg {
-margin-right: .2rem;
-}
-
-.logoName {
-  font-weight: 400;
-}
-
 [data-theme='light'] {
   color-scheme: light;
   --color-bg-def: ghostwhite;
@@ -40,6 +23,7 @@ margin-right: .2rem;
   --color-fill-circle: rgba(0, 0, 0, 0.744);
   --color-date-def: rgb(140, 140, 140);
   --color-hover: underline 3px solid #0000ffc9;
+  --color-bg-hover: rgba(175, 184, 194, 0.535);
   --color-section-def: rgba(0, 0, 0, 0.963);
   --color-border: 1px solid #bbb;
   --color-editor-code: rgba(28, 28, 28, 0.888);
@@ -73,7 +57,7 @@ margin-right: .2rem;
 [data-theme='dark'] {
   color-scheme: dark;
   --color-bg-def: rgb(48, 48, 50);
-  --color-border-bottom-def: 1px solid rgba(217, 217, 233, 0.124);
+  --color-border-bottom-def: 1px solid rgba(178, 178, 192, 0.124);
   --color-a-def: #8ACAFF;
   --color-ul-a: rgba(240, 236, 236, 0.844);
   --color-stroke-def: rgba(243, 243, 243, 0.623);
@@ -83,6 +67,7 @@ margin-right: .2rem;
   --color-fill-circle: rgba(255, 255, 255, 0.787);
   --color-date-def: rgb(140, 140, 140);
   --color-hover: underline 3px solid #B798FF;
+  --color-bg-hover: rgba(79, 83, 89, 0.535);
   --color-section-def: rgba(211, 211, 211, 0.933);
   --color-border: 1px solid rgba(187, 187, 187, 0.345);
   --color-editor-code: rgba(232, 229, 229, 0.848);
@@ -113,6 +98,24 @@ margin-right: .2rem;
   --color-alert-background: rgba(55, 55, 55, 0.884);
 }
 
+.logoContainer { 
+  border-radius: 3px;
+  padding: .8rem .2rem;
+}
+
+.logoContainer:hover {
+  /* text-decoration: var(--color-hover); */
+  background-color: var(--color-bg-hover);
+}
+
+.logoContainer .svg {
+margin-right: .2rem;
+}
+
+.logoName {
+  font-weight: 400;
+}
+
 .logoTitle {
   display: flex;
   flex-direction: row;
@@ -120,7 +123,6 @@ margin-right: .2rem;
   align-items: center;
   font-size: normal;
   color: var(--color-logoTitle);
-  text-decoration: var(--color-logoTitle-text-decoration);
 }
 
 section {
