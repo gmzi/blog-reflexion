@@ -1,8 +1,8 @@
 .nav {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin: 0rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0rem;
 }
 
 .logoLink:hover {
@@ -15,10 +15,11 @@
   padding: 0;
 }
 
+
 .container {
-  max-width: 36rem;
-  margin: 2rem auto 2rem;
-  padding: 1rem 0rem;
+  max-width: 46rem;
+  margin: 2rem auto;
+  padding: 0rem 2rem;
 }
 
 .main {
