@@ -1,38 +1,3 @@
-.container { 
-  border-radius: 3px;
-  padding: .4rem .2rem;
-}
-
-.container:hover {
-  background-color: rgb(217, 217, 233);;
-  text-decoration: none;
-}
-
-.title,
-.subtitle {
-    color: black;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .title {
-    font-size: normal;
-  }
-
-  .subtitle {
-    display: block;
-    font-weight: 200;
-    font-size: x-small;
-    margin-left: .1rem;
-  }
-
-  .name {
-    /* padding: .8rem 0rem; */
-    font-weight: 400;
-  }
-
   .charContainer {
     padding: 0rem 0rem;
     text-decoration: none;
@@ -47,19 +12,6 @@
   .char {
     font-weight: bold;
     font-size: large;
-  }
-
-  @media (max-width: 700px){
-    .subtitle {
-      font-size: xx-small;
-    }
-    .subtitle {
-      width: 75%;
-    }
-  }
-
-  .svg {
-    margin-right: .2rem;
   }
 
  
