@@ -71,7 +71,8 @@ export default function Layout({ children, home, post, dashboard }) {
                 <meta property="og:site_name" content={render.site_name} />
                 <meta property="og:description" content={render.description} />
                 <meta property="og:title" content={render.title} />
-                <meta property="og:image" content={render.ogImage} />
+                {/* <meta property="og:image" content={render.ogImage} /> */}
+                <meta property="og:image" content={`https://og-image-gmzi.vercel.app/api/og-blog-reflexion?title=${render.title}`} />
                 
                 {/* Twitter */}
                 <meta name="twitter:card" content="summary_large_image" />
