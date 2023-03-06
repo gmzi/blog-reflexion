@@ -37,13 +37,15 @@
     padding-top: 1px;
   }
   
-  .list {
+  .list, 
+  .cardList {
     list-style: none;
     padding: 0rem;
     margin: 0;
   }
   
-  .listItem {
+  .listItem, 
+  .cardListItem {
     margin: 0 0 1rem;
     font-size: smaller;
     font-weight: 300;
@@ -57,8 +59,17 @@
     margin: 0rem 1rem;
   }
 
-  .titleContainer {
+  .cardContainer {
     width: calc(100% - 7rem);
+  }
+
+  .card {
+    border: 1px solid red;
+  }
+
+  .imgContainer {
+    border: 1px solid blue;
+    max-width: 1rem;
   }
 
   @media (max-width: 700px){
