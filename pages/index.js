@@ -4,7 +4,6 @@ import Layout from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
 import { connectToDatabase } from '../lib/mongodb';
 import { data, text } from '../lib/data';
-import Image from 'next/image';
 
 const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION;
 
@@ -15,28 +14,19 @@ export default function Home({ posts }) {
         {!posts.length ? (
           <p>No posts yet...</p>
         ) : (
-          <ul className={utilStyles.cardList}>
+          <div className={utilStyles.container}>
             {posts.map(({ _id, fileName, title, author, date, image_url }) => (
-              <li className={utilStyles.cardListItem} key={_id}>
-                <div className={utilStyles.cardContainer}>
-                  <Link href={`/posts/${fileName}`} passHref>
-                    <div className={utilStyles.card}>
-                      {/* <div className={utilStyles.imgContainer}>
-                        <img src={image_url} alt="test" />
-                      </div> */}
-                      <Image width={500} height={500} src={image_url} />
-                      <a>
-                        <span>{title}</span>{' '}
-                        <span className="postDate">
-                          {text.index.by} {author}
-                        </span>
-                      </a>
-                    </div>
-                  </Link>
+              <Link href={`/posts/${fileName}`} passHref key={_id}>
+                <div className={utilStyles.box}>
+                  <img src={image_url} alt="test" />
+                  <h2>{title}</h2>
+                  <span className="postDate">
+                    {text.index.by} {author}
+                  </span>
                 </div>
-              </li>
+              </Link>
             ))}
-          </ul>
+          </div>
         )}
       </section>
     </Layout>
