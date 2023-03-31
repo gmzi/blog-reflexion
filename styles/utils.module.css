@@ -15,7 +15,8 @@
   text-align: center;
 }
 
-.box img {
+.box img,
+.article img {
   width: 100%;
   height: auto;
   margin-bottom: .1em;

@@ -18,7 +18,7 @@ export default function Home({ posts }) {
             {posts.map(({ _id, fileName, title, author, date, image_url }) => (
               <Link href={`/posts/${fileName}`} passHref key={_id}>
                 <div className={utilStyles.box}>
-                  <img src={image_url} alt="test" />
+                  <img src={image_url} alt="image" />
                   <h2>{title}</h2>
                   <span className="postDate">
                     {text.index.by} {author}
