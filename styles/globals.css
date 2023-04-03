@@ -103,6 +103,9 @@ body {
 .logoContainer { 
   border-radius: 3px;
   padding: .8rem .2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .logoContainer:hover {
@@ -111,20 +114,34 @@ body {
 }
 
 .logoContainer .svg {
-margin-right: .2rem;
+  margin-right: .2rem;
 }
 
 .logoName {
   font-weight: 400;
 }
 
-.logoTitle {
+.logoTitle,
+.descriptionLine {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  font-size: normal;
   color: var(--color-logoTitle);
+}
+
+.logoTitle {
+  font-size: normal;
+}
+
+.descriptionLine {
+  font-size: .7em;
+ }
+
+ @media (max-width: 600px){
+  .descriptionLine {
+    max-width: 17em;
+  }
 }
 
 section {
