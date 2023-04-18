@@ -356,8 +356,10 @@ button:active {
 
 /* ------------------------------------------------------------------------------------------------ */
 /* ARTICLE IMAGES */
-.postContent img  {
-  padding: 2rem;
+@media (min-width: 768px){
+  .postContent img  {
+    padding: 1rem;
+  } 
 }
 
 .postContent section h2, 
