@@ -36,3 +36,4 @@ yarn-error.log*
 # user instance metadata
 /public/robots.txt
 
+push-manual.md
