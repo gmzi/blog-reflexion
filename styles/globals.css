@@ -334,6 +334,11 @@ button:active {
   font-weight: 400;
 }
 
+.postContent p {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
 .postContentHeadingLg,
 .postContent h2,
 .postContent h3 {
@@ -349,10 +354,10 @@ button:active {
   padding: 0rem 1rem;
 }
 
-.postContent img {
-    width: 100%;
-    /* border-radius: 5px; */
-    /* box-shadow: var(--color-box-shadow) */
+/* ------------------------------------------------------------------------------------------------ */
+/* ARTICLE IMAGES */
+.postContent img  {
+  padding: 2rem;
 }
 
 .postContent section h2, 
