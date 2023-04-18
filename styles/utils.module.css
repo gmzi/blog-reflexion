@@ -19,7 +19,8 @@
 .article img {
   width: 100%;
   height: auto;
-  margin-bottom: .1em;
+  margin: 2rem 0rem;
+  border-radius: 5px;
 }
 
 .box h2 {

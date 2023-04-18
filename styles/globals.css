@@ -350,8 +350,8 @@ button:active {
 
 .postContent img {
     width: 100%;
-    border-radius: 5px;
-    box-shadow: var(--color-box-shadow)
+    /* border-radius: 5px; */
+    /* box-shadow: var(--color-box-shadow) */
 }
 
 .postContent section h2, 
