@@ -86,7 +86,9 @@ export default function Layout({ children, home, post, dashboard }) {
                 <meta httpEquiv='Content-Language' content={render.language} />
                 <link rel="icon" href="/favicon.ico" />
                 <meta name="title" content={render.title} />
-                <meta name="theme-color" content="#317EFB"/>
+                {mounted && (
+                    resolvedTheme === 'light' ? <meta name="theme-color" content='ghostwhite'/> : <meta name="theme-color" content='rgb(48, 48, 50)'/>
+                )}
                 <meta charSet='utf-8' />
             </Head>
 
