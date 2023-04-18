@@ -12,7 +12,7 @@ const Logo = () => (
       <span>reflexión en música</span>
     </span>
     <span className={'descriptionLine'}>
-      artículos, notas, reseñas, ensayos de estética musical
+      artículos, notas, reseñas y ensayos
     </span>
   </div>
 );

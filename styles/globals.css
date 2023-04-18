@@ -131,7 +131,8 @@ body {
 }
 
 .logoTitle {
-  font-size: normal;
+  font-size: large;
+  margin-bottom: .1rem;
 }
 
 .descriptionLine {
