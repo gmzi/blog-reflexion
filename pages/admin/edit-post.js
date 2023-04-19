@@ -31,14 +31,14 @@ export default function EditPost({ post }) {
     const [unsavedChanges, setUnsavedChanges] = useState();
 
     useEffect(() => {
-        ifLocalStorageSetState('postText', setValue)
-        ifLocalStorageSetState('postTitle', setTitle)
-        ifLocalStorageSetState('postAuthor', setAuthorName)
-        ifLocalStorageSetState('postDescription', setDescription)
+        ifLocalStorageSetState('edit-postText', setValue)
+        ifLocalStorageSetState('edit-postTitle', setTitle)
+        ifLocalStorageSetState('edit-postAuthor', setAuthorName)
+        ifLocalStorageSetState('edit-postDescription', setDescription)
     }, [])
 
     const handleData = (data) => {
-        setLocalStorageAndState('postText', data, setValue)
+        setLocalStorageAndState('edit-postText', data, setValue)
     }
 
     const handleFormChange = (e) => {
@@ -46,10 +46,9 @@ export default function EditPost({ post }) {
         const authorName = e.target.form.author.value;
         const description = e.target.form.description.value;
         const postTitle = e.target.form.title.value;
-        setLocalStorageAndState('postAuthor', authorName, setAuthorName)
-        setLocalStorageAndState('postDescription', description, setDescription)
-        setLocalStorageAndState('postTitle', postTitle, setTitle)
-        return;
+        setLocalStorageAndState('edit-postAuthor', authorName, setAuthorName)
+        setLocalStorageAndState('edit-postDescription', description, setDescription)
+        setLocalStorageAndState('edit-postTitle', postTitle, setTitle)
     }
 
     
@@ -86,20 +85,27 @@ export default function EditPost({ post }) {
         })
         if (response.ok) {
             setStatus({ alert: "messageAndRefresh", message: `${text.editPost.changesHaveBeenSaved}` })
-            cleanLocalStorage('postText')
-            cleanLocalStorage('postTitle')
-            cleanLocalStorage('postAuthor')
-            cleanLocalStorage('postDescription')
+            return true;
         } else {
             const errorMsg = await response.json();
-            setStatus({ alert: "bodyAlert", message: errorMsg.error })
+            return errorMsg
         }
         return;
     }
 
-    const handleUpdate = () => {
-        setUnsavedChanges(false)
-        updatePost(value, title, authorName, description)
+    const handleUpdate = async () => {
+        const updated = await updatePost(value, title, authorName, description)
+        if (updated){
+            setUnsavedChanges(false)
+            cleanLocalStorage('edit-postText')
+            cleanLocalStorage('edit-postTitle')
+            cleanLocalStorage('edit-postAuthor')
+            cleanLocalStorage('edit-postDescription')
+            return;
+        } else {
+            setStatus({alert: "bodyAlert", message: updated.error})
+            return;
+        }
     }
 
     if (session) {
@@ -117,13 +123,13 @@ export default function EditPost({ post }) {
                         <div>
                             <Editor postBody={value} handleData={handleData}/>
 
-                            <form encType="multipart/form-data">
+                            <form onChange={handleFormChange} encType="multipart/form-data">
                                 <label htmlFor="title">{text.addPostForm.title}</label>
-                                <input type="text" name="title" placeholder={text.addPostForm.title} value={title} onChange={handleFormChange} />
+                                <input type="text" name="title" placeholder={text.addPostForm.title} value={title}/>
                                 <label htmlFor="author">{text.addPostForm.authorName}</label>
-                                <input type="text" name="author" placeholder={text.addPostForm.authorPlaceholder} value={authorName} onChange={handleFormChange} />
+                                <input type="text" name="author" placeholder={text.addPostForm.authorPlaceholder} value={authorName}/>
                                 <label htmlFor="description">{text.addPostForm.description}</label>
-                                <textarea id="description" name="description" placeholder={`(${text.addPostForm.optional})`} value={description} onChange={handleFormChange} />
+                                <textarea id="description" name="description" placeholder={`(${text.addPostForm.optional})`} value={description}/>
                             </form>
                             <div className={styles.btnContainer}>
                                 <button className="btnPublish" onClick={handleUpdate}>{text.editor.saveChanges}</button>
