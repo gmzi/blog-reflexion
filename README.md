@@ -2,7 +2,8 @@
 
 This is an extremely simple blogging platform I made for the argentinian magazine Reflexión en Música.
 It's A Next.Js blog with a password-protected dashboard where a blog owner can either upload an .md file, or write in a built in editor to create a new post. When a post is added or removed from the dashboard, an on-demand revalidation is triggered. The authentication is handled by next-auth. The front end has a dark theme I really like, it's done with the useTheme hook.
-To try out the dashboard, you can visit a live demo [here](https://blog-gmzi.vercel.app).
+The .md to html parse is made with [remark](https://github.com/remarkjs/remark), footnotes with [remark-gfm](https://github.com/remarkjs/remark-gfm) and image captions with [remark-captions](https://github.com/zestedesavoir/zmarkdown/tree/master/packages/remark-captions).
+To try out a basic version of the dashboard, you can visit a live demo [here](https://blog-gmzi.vercel.app).
 Thanks for reading!!!
 
 # Usage
