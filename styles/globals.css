@@ -329,14 +329,12 @@ button:active {
   font-size: 2rem;
 }
 
+/* ------------------------------------------------------------------- */
+/* POST STYLES */
+
 .postContent {
   position: relative;
   font-weight: 400;
-}
-
-.postContent p {
-  text-align: justify;
-  text-justify: inter-word;
 }
 
 .postContentHeadingLg,
@@ -359,7 +357,6 @@ button:active {
 }
 
 .postContent figure {
-  width: 100%;
   display: block;
   margin-block-start: 2em;
   margin-block-end: 2em;
@@ -368,10 +365,11 @@ button:active {
 }
 
 .postContent figure img {
+  width: 100%;
+  height: auto;
   display: block;
   margin-left: auto;
   margin-right: auto;
-  max-width: 100%;
 }
 
 
