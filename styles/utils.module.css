@@ -13,6 +13,7 @@
   border: 1px solid #ccc;
   padding: .6em;
   text-align: center;
+  cursor: pointer;
 }
 
 .box img,
