@@ -13,6 +13,7 @@ import Editor from "../../components/editor";
 import { ifLocalStorageSetState } from "../../lib/local-store";
 import { setLocalStorageAndState } from "../../lib/local-store";
 import { cleanLocalStorage } from "../../lib/local-store";
+import { useRouter } from "next/router";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const SAVE_TOKEN = process.env.NEXT_PUBLIC_SAVE_TOKEN;
@@ -30,6 +31,36 @@ export default function WritePost() {
     const [description, setDescription] = useState()
     const [status, setStatus] = useState();
     const [published, setPublished] = useState();
+    const [unsavedChanges, setUnsavedChanges] = useState();
+    const router = useRouter()
+
+
+    useEffect(() => {
+        const confirmationMessage = `${text.editor.youHaveUnpublished}`;
+        const beforeUnloadHandler = (e) => {
+            (e || window.event).returnValue = confirmationMessage;
+            return confirmationMessage; // Gecko + Webkit, Safari, Chrome etc.
+        };
+        const beforeRouteHandler = (url) => {
+            if (router.pathname !== url && !confirm(confirmationMessage)) {
+                // to inform NProgress or something ...
+                router.events.emit('routeChangeError');
+                // tslint:disable-next-line: no-string-throw
+                throw `Route change to "${url}" was aborted (this error can be safely ignored). See https://github.com/zeit/next.js/issues/2476.`;
+            }
+        };
+        if (unsavedChanges) {
+            window.addEventListener('beforeunload', beforeUnloadHandler);
+            router.events.on('routeChangeStart', beforeRouteHandler);
+        } else {
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+            router.events.off('routeChangeStart', beforeRouteHandler);
+        }
+        return () => {
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+            router.events.off('routeChangeStart', beforeRouteHandler);
+        };
+    }, [unsavedChanges, router]);
 
 
     useEffect(() => {
@@ -43,6 +74,7 @@ export default function WritePost() {
     }
 
     const handleFormChange = (e) => {
+        setUnsavedChanges(true)
         const authorName = e.target.form.author.value;
         const description = e.target.form.description.value;
         setLocalStorageAndState('postAuthor', authorName, setAuthorName)
@@ -109,11 +141,12 @@ export default function WritePost() {
         })
 
         if (publish.ok) {
+            setStatus({ alert: "messageAlert", message: `${text.writePost.postPublished}` })
+            setUnsavedChanges(false)
+            setPublished(true)
             cleanLocalStorage('postText')
             cleanLocalStorage('postAuthor')
             cleanLocalStorage('postDescription')
-            setStatus({ alert: "messageAlert", message: `${text.writePost.postPublished}` })
-            setPublished(true)
         } else {
             const errorMsg = await publish.json();
             setStatus({ alert: "bodyAlert", message: errorMsg.error })
