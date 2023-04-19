@@ -354,12 +354,33 @@ button:active {
   padding: 0rem 1rem;
 }
 
+.postContent figcaption {
+  font-size: small;
+}
+
+.postContent figure {
+  width: 100%;
+  display: block;
+  margin-block-start: 2em;
+  margin-block-end: 2em;
+  margin-inline-start: 0em;
+  margin-inline-end: 0px;
+}
+
+.postContent figure img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+}
+
+
 /* ------------------------------------------------------------------------------------------------ */
 /* ARTICLE IMAGES */
 @media (min-width: 768px){
-  .postContent img  {
+  .postContent figure  {
     padding: 1rem;
-  } 
+  }
 }
 
 .postContent section h2, 
