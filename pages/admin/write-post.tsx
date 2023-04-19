@@ -10,6 +10,9 @@ import Restricted from "../../components/restricted";
 import { text } from '../../lib/data'
 import styles from '../../styles/dashboard.module.css'
 import Editor from "../../components/editor";
+import { ifLocalStorageSetState } from "../../lib/local-store";
+import { setLocalStorageAndState } from "../../lib/local-store";
+import { cleanLocalStorage } from "../../lib/local-store";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const SAVE_TOKEN = process.env.NEXT_PUBLIC_SAVE_TOKEN;
@@ -30,38 +33,20 @@ export default function WritePost() {
 
 
     useEffect(() => {
-        if (JSON.parse(localStorage.getItem('postText'))) {
-            setValue(JSON.parse(localStorage.getItem('postText')))
-        }
-        if (JSON.parse(localStorage.getItem('postAuthor'))) {
-            setAuthorName(JSON.parse(localStorage.getItem('postAuthor')))
-        }
-        if (JSON.parse(localStorage.getItem('postDescription'))) {
-            setDescription(JSON.parse(localStorage.getItem('postDescription')))
-        }
+        ifLocalStorageSetState('postText', setValue)
+        ifLocalStorageSetState('postAuthor', setAuthorName)
+        ifLocalStorageSetState('postDescription', setDescription)
     }, [])
 
     const handleData = (data) => {
-        localStorage.setItem(
-            'postText',
-            JSON.stringify(data)
-        );
-        setValue(data)
+        setLocalStorageAndState('postText', data, setValue)
     }
 
     const handleFormChange = (e) => {
         const authorName = e.target.form.author.value;
         const description = e.target.form.description.value;
-        localStorage.setItem(
-            'postAuthor',
-            JSON.stringify(authorName)
-        );
-        localStorage.setItem(
-            'postDescription',
-            JSON.stringify(description)
-        );
-        setAuthorName(authorName)
-        setDescription(description)
+        setLocalStorageAndState('postAuthor', authorName, setAuthorName)
+        setLocalStorageAndState('postDescription', description, setDescription)
     }
 
 
@@ -124,9 +109,9 @@ export default function WritePost() {
         })
 
         if (publish.ok) {
-            localStorage.removeItem('postText')
-            localStorage.removeItem('postAuthor')
-            localStorage.removeItem('postDescription')
+            cleanLocalStorage('postText')
+            cleanLocalStorage('postAuthor')
+            cleanLocalStorage('postDescription')
             setStatus({ alert: "messageAlert", message: `${text.writePost.postPublished}` })
             setPublished(true)
         } else {

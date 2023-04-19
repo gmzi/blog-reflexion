@@ -111,7 +111,8 @@
             "errorFormatting": "Error formateando datos, por favor revisa tu archivo e inténtalo de nuevo",
             "postPublished": "Post publicado, felicitaciones!!!!",
             "failedPublishing": "Error al intentar publicar, por favor edita tu archivo e intenta de nuevo",
-            "here": "aqui"
+            "here": "aqui",
+            "title": "título"
         },
         "previewPost": {
             "refreshIndex": "refrescar página de inicio",

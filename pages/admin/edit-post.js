@@ -11,6 +11,9 @@ import { data, text } from "../../lib/data";
 import Alert from "../../components/alert";
 import Link from 'next/link';
 import styles from '../../styles/dashboard.module.css'
+import { ifLocalStorageSetState } from "../../lib/local-store";
+import { setLocalStorageAndState } from "../../lib/local-store";
+import { cleanLocalStorage } from "../../lib/local-store";
 
 const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION;
 const API_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -26,6 +29,30 @@ export default function EditPost({ post }) {
     const [description, setDescription] = useState(post.description)
     const [status, setStatus] = useState()
     const [unsavedChanges, setUnsavedChanges] = useState();
+
+    useEffect(() => {
+        ifLocalStorageSetState('postText', setValue)
+        ifLocalStorageSetState('postTitle', setTitle)
+        ifLocalStorageSetState('postAuthor', setAuthorName)
+        ifLocalStorageSetState('postDescription', setDescription)
+    }, [])
+
+    const handleData = (data) => {
+        setLocalStorageAndState('postText', data, setValue)
+    }
+
+    const handleFormChange = (e) => {
+        setUnsavedChanges(true)
+        const authorName = e.target.form.author.value;
+        const description = e.target.form.description.value;
+        const postTitle = e.target.form.title.value;
+        setLocalStorageAndState('postAuthor', authorName, setAuthorName)
+        setLocalStorageAndState('postDescription', description, setDescription)
+        setLocalStorageAndState('postTitle', postTitle, setTitle)
+        return;
+    }
+
+    
 
     function cancelAction() {
         setStatus(null)
@@ -58,33 +85,16 @@ export default function EditPost({ post }) {
             body: JSON.stringify(newData)
         })
         if (response.ok) {
-            // localStorage.removeItem(`blogText-${post.id}`)
             setStatus({ alert: "messageAndRefresh", message: `${text.editPost.changesHaveBeenSaved}` })
+            cleanLocalStorage('postText')
+            cleanLocalStorage('postTitle')
+            cleanLocalStorage('postAuthor')
+            cleanLocalStorage('postDescription')
         } else {
             const errorMsg = await response.json();
             setStatus({ alert: "bodyAlert", message: errorMsg.error })
         }
         return;
-    }
-
-    const handleFormChange = (e) => {
-        setUnsavedChanges(true)
-        if (e.target){
-            if(e.target.name === 'title'){
-                setTitle(e.target.value)
-            } 
-            if(e.target.name === 'author'){
-                setAuthorName(e.target.value)
-            } 
-            if(e.target.name === 'description'){
-                setDescription(e.target.value)
-            }
-        } 
-        return;
-    }
-
-    const handleData = (data) => {
-        setValue(data)
     }
 
     const handleUpdate = () => {
