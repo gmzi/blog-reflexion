@@ -250,7 +250,7 @@ form textarea {
 height: 2rem;
 }
 
-/* ---------------------------- */
+/* -------------------------------------------------------- */
 /* BUTTONS */
 .buttonTheme,
 .buttonTheme:hover,
@@ -323,6 +323,7 @@ button:active {
   color: var(--color-btnDelete-disabled);
   border: var(--color-btnDelete-disabled-border);
   background-color: var(--color-btnDelete-disabled-background);
+  box-shadow: none;
 }
 
 .btnDelete-disabled:hover {

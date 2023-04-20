@@ -15,6 +15,7 @@ import { ifLocalStorageSetState } from "../../lib/local-store";
 import { setLocalStorageAndState } from "../../lib/local-store";
 import { cleanLocalStorage } from "../../lib/local-store";
 import {checkUnsavedChanges } from "../../lib/local-store";
+import { checkLocalToRemote } from '../../lib/local-store';
 import { useRouter } from 'next/router';
 
 const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION;
@@ -26,11 +27,12 @@ const SAVE_TOKEN = process.env.NEXT_PUBLIC_SAVE_TOKEN;
 export default function EditPost({ post }) {
     const { data: session } = useSession()
     const [value, setValue] = useState(post.body)
+    const [unsavedChangesOnValue, setUnsavedChangesOnValue] = useState()
     const [title, setTitle] = useState(post.title)
     const [authorName, setAuthorName] = useState(post.authorName)
     const [description, setDescription] = useState(post.description)
     const [status, setStatus] = useState()
-    const [unsavedChanges, setUnsavedChanges] = useState(false)
+    const [unsavedChanges, setUnsavedChanges] = useState()
     const {asPath} = useRouter()
 
     useEffect(() => {
@@ -41,21 +43,26 @@ export default function EditPost({ post }) {
     }, [])
 
     useEffect(() => {
-        checkUnsavedChanges('edit-postText', 'edit-postTitle', 'edit-postAuthor', 'edit-postDescription', setUnsavedChanges)
-    }, [unsavedChanges])
+    }, [unsavedChanges, unsavedChangesOnValue])
 
     const handleData = (data) => {
         setLocalStorageAndState('edit-postText', data, setValue)
+        if (data === post.body){
+            setUnsavedChangesOnValue(false)
+        }
     }
 
     const handleFormChange = (e) => {
-        setUnsavedChanges(true)
+        const postTitle = e.target.form.title.value;
         const authorName = e.target.form.author.value;
         const description = e.target.form.description.value;
-        const postTitle = e.target.form.title.value;
         setLocalStorageAndState('edit-postAuthor', authorName, setAuthorName)
         setLocalStorageAndState('edit-postDescription', description, setDescription)
         setLocalStorageAndState('edit-postTitle', postTitle, setTitle)
+        setUnsavedChanges(true)
+        if ( postTitle === post.title && authorName === post.authorName && description === post.description){
+            setUnsavedChanges(false)
+        } 
     }
 
     function cancelAction() {
@@ -130,7 +137,7 @@ export default function EditPost({ post }) {
                         <Alert data={status} cancelAction={cancelAction} downloadFile={undefined} deletePost={undefined} resetCounter={undefined} url={asPath} discardChanges={handleDiscardChanges} />
                     ) : (
                         <div>
-                            <Editor postBody={value} handleData={handleData} parentUnsavedChanges={unsavedChanges} setParentUnsavedChanged={setUnsavedChanges}/>
+                            <Editor postBody={value} handleData={handleData} parentUnsavedChanges={unsavedChangesOnValue} setParentUnsavedChanged={setUnsavedChangesOnValue}/>
 
                             <form encType="multipart/form-data">
                                 <label htmlFor="title">{text.addPostForm.title}</label>
@@ -142,7 +149,7 @@ export default function EditPost({ post }) {
                             </form>
                             <div className={styles.btnContainer}>
                                 <button className="btnPublish" onClick={handleUpdate}>{text.editor.saveChanges}</button>
-                                {unsavedChanges ? (
+                                {unsavedChanges || unsavedChangesOnValue ? (
                                     <button className="btnDelete" onClick={alertToDiscard}>{text.editor.discardChanges}</button>    
                                 ) :(
                                     <button className="btnDelete-disabled">{text.editor.discardChanges}</button>    
