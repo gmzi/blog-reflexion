@@ -14,7 +14,7 @@ import styles from '../../styles/dashboard.module.css'
 import { ifLocalStorageSetState } from "../../lib/local-store";
 import { setLocalStorageAndState } from "../../lib/local-store";
 import { cleanLocalStorage } from "../../lib/local-store";
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 
 const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION;
 const API_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -29,36 +29,7 @@ export default function EditPost({ post }) {
     const [authorName, setAuthorName] = useState(post.authorName)
     const [description, setDescription] = useState(post.description)
     const [status, setStatus] = useState()
-    const [unsavedChanges, setUnsavedChanges] = useState();
-    const router = useRouter()
-
-
-    useEffect(() => {
-        const confirmationMessage = `${text.editor.youHaveUnpublished}`;
-        const beforeUnloadHandler = (e) => {
-            (e || window.event).returnValue = confirmationMessage;
-            return confirmationMessage; // Gecko + Webkit, Safari, Chrome etc.
-        };
-        const beforeRouteHandler = (url) => {
-            if (router.pathname !== url && !confirm(confirmationMessage)) {
-                // to inform NProgress or something ...
-                router.events.emit('routeChangeError');
-                // tslint:disable-next-line: no-string-throw
-                throw `Route change to "${url}" was aborted (this error can be safely ignored). See https://github.com/zeit/next.js/issues/2476.`;
-            }
-        };
-        if (unsavedChanges) {
-            window.addEventListener('beforeunload', beforeUnloadHandler);
-            router.events.on('routeChangeStart', beforeRouteHandler);
-        } else {
-            window.removeEventListener('beforeunload', beforeUnloadHandler);
-            router.events.off('routeChangeStart', beforeRouteHandler);
-        }
-        return () => {
-            window.removeEventListener('beforeunload', beforeUnloadHandler);
-            router.events.off('routeChangeStart', beforeRouteHandler);
-        };
-    }, [unsavedChanges, router]);
+    const {asPath} = useRouter()
 
     useEffect(() => {
         ifLocalStorageSetState('edit-postText', setValue)
@@ -72,7 +43,6 @@ export default function EditPost({ post }) {
     }
 
     const handleFormChange = (e) => {
-        setUnsavedChanges(true)
         const authorName = e.target.form.author.value;
         const description = e.target.form.description.value;
         const postTitle = e.target.form.title.value;
@@ -80,8 +50,6 @@ export default function EditPost({ post }) {
         setLocalStorageAndState('edit-postDescription', description, setDescription)
         setLocalStorageAndState('edit-postTitle', postTitle, setTitle)
     }
-
-    
 
     function cancelAction() {
         setStatus(null)
@@ -115,27 +83,27 @@ export default function EditPost({ post }) {
         })
         if (response.ok) {
             setStatus({ alert: "messageAndRefresh", message: `${text.editPost.changesHaveBeenSaved}` })
-            return true;
+            cleanLocalStorage('edit-postText')
+            cleanLocalStorage('edit-postTitle')
+            cleanLocalStorage('edit-postAuthor')
+            cleanLocalStorage('edit-postDescription')
         } else {
             const errorMsg = await response.json();
-            return errorMsg
+            setStatus({alert: "bodyAlert", message: errorMsg})
         }
         return;
     }
 
     const handleUpdate = async () => {
-        const updated = await updatePost(value, title, authorName, description)
-        if (updated){
-            setUnsavedChanges(false)
-            cleanLocalStorage('edit-postText')
-            cleanLocalStorage('edit-postTitle')
-            cleanLocalStorage('edit-postAuthor')
-            cleanLocalStorage('edit-postDescription')
-            return;
-        } else {
-            setStatus({alert: "bodyAlert", message: updated.error})
-            return;
-        }
+        updatePost(value, title, authorName, description)
+    }
+
+    const handleDiscardChanges = () => {
+        cleanLocalStorage('edit-postText')
+        cleanLocalStorage('edit-postTitle')
+        cleanLocalStorage('edit-postAuthor')
+        cleanLocalStorage('edit-postDescription')
+        setStatus({ alert: "messageAndRefresh-Discard", message: `${text.editPost.changesHaveBeenDiscarded}`})
     }
 
     if (session) {
@@ -148,25 +116,26 @@ export default function EditPost({ post }) {
                 <section>
                     <h2>{text.editPost.editPost}</h2>
                     {status ? (
-                        <Alert data={status} cancelAction={cancelAction} downloadFile={undefined} deletePost={undefined} resetCounter={undefined} />
+                        <Alert data={status} cancelAction={cancelAction} downloadFile={undefined} deletePost={undefined} resetCounter={undefined} url={asPath} />
                     ) : (
                         <div>
                             <Editor postBody={value} handleData={handleData}/>
 
-                            <form onChange={handleFormChange} encType="multipart/form-data">
+                            <form encType="multipart/form-data">
                                 <label htmlFor="title">{text.addPostForm.title}</label>
-                                <input type="text" name="title" placeholder={text.addPostForm.title} value={title}/>
+                                <input type="text" name="title" placeholder={text.addPostForm.title} value={title} onChange={handleFormChange} />
                                 <label htmlFor="author">{text.addPostForm.authorName}</label>
-                                <input type="text" name="author" placeholder={text.addPostForm.authorPlaceholder} value={authorName}/>
+                                <input type="text" name="author" placeholder={text.addPostForm.authorPlaceholder} value={authorName} onChange={handleFormChange} />
                                 <label htmlFor="description">{text.addPostForm.description}</label>
-                                <textarea id="description" name="description" placeholder={`(${text.addPostForm.optional})`} value={description}/>
+                                <textarea id="description" name="description" placeholder={`(${text.addPostForm.optional})`} value={description} onChange={handleFormChange} />
                             </form>
                             <div className={styles.btnContainer}>
                                 <button className="btnPublish" onClick={handleUpdate}>{text.editor.saveChanges}</button>
+                                <button className="btnDelete" onClick={handleDiscardChanges}>{text.editor.discardChanges}</button>
                             </div>
                         </div>
                     )
-                    }
+                }
                 </section>
                 <div className={styles.btnContainer}>
                     <Link href='/admin/dashboard'>

@@ -3,7 +3,7 @@ import styles from "./alert.module.css"
 import { text } from "../lib/data"
 
 
-export default function Alert({ data, cancelAction, downloadFile, deletePost, resetCounter }) {
+export default function Alert({ data, cancelAction, downloadFile, deletePost, resetCounter, url }) {
 
     function handleCancel() {
         if (data.alert === "titleAlert") {
@@ -94,6 +94,16 @@ export default function Alert({ data, cancelAction, downloadFile, deletePost, re
                 <p>{data.message}</p>
                 {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                 <span><a href="/">{text.editPost.refreshIndex}</a> to see the changes</span>
+            </div>
+        )
+    }
+
+    if (data.alert === 'messageAndRefresh-Discard') {
+        return (
+            <div className="alertContainer">
+                <p>{data.message}</p>
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                <span><a href={url}>{text.editPost.refresh}</a></span>
             </div>
         )
     }

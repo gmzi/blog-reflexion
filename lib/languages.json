@@ -61,14 +61,17 @@
         },
         "editor": {
             "loading": "Cargando el editor...",
-            "saveChanges": "Guardar cambios",
+            "saveChanges": "Publicar los cambios",
+            "discardChanges": "Descartar los cambios",
             "youHaveUnpublished": "Tienes cambios sin publicar, seguro que quieres salir de esta página?"
         },
         "editPost": {
             "editPost": "Editar Post",
-            "refreshIndex": "Eefrescar Pndex",
+            "refreshIndex": "Refrescar Index",
+            "refresh": "Refrescar para volver a la version guardada",
             "noModifications": "no hay cambios",
             "changesHaveBeenSaved": "cambios guardados",
+            "changesHaveBeenDiscarded": "los cambios se han descartado",
             "savingChanges": "guardando los cambios... "
         },
         "date": {
@@ -196,13 +199,16 @@
         "editor": {
             "loading": "Loading editor...",
             "saveChanges": "Save changes",
+            "discardChanges": "Discard changes",
             "youHaveUnpublished": "You have unpublished changes, are you sure you want to leave this page?"
         },
         "editPost": {
             "editPost": "Edit Post",
             "refreshIndex": "refresh index page",
+            "refresh": "Refresh",
             "noModifications": "no modifications made",
             "changesHaveBeenSaved": "changes have been saved",
+            "changesHaveBeenDiscarded": "changes have been discarded",
             "savingChanges": "saving changes... "
         },
         "date": {

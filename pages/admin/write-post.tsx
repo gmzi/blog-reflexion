@@ -31,37 +31,6 @@ export default function WritePost() {
     const [description, setDescription] = useState()
     const [status, setStatus] = useState();
     const [published, setPublished] = useState();
-    const [unsavedChanges, setUnsavedChanges] = useState();
-    const router = useRouter()
-
-
-    useEffect(() => {
-        const confirmationMessage = `${text.editor.youHaveUnpublished}`;
-        const beforeUnloadHandler = (e) => {
-            (e || window.event).returnValue = confirmationMessage;
-            return confirmationMessage; // Gecko + Webkit, Safari, Chrome etc.
-        };
-        const beforeRouteHandler = (url) => {
-            if (router.pathname !== url && !confirm(confirmationMessage)) {
-                // to inform NProgress or something ...
-                router.events.emit('routeChangeError');
-                // tslint:disable-next-line: no-string-throw
-                throw `Route change to "${url}" was aborted (this error can be safely ignored). See https://github.com/zeit/next.js/issues/2476.`;
-            }
-        };
-        if (unsavedChanges) {
-            window.addEventListener('beforeunload', beforeUnloadHandler);
-            router.events.on('routeChangeStart', beforeRouteHandler);
-        } else {
-            window.removeEventListener('beforeunload', beforeUnloadHandler);
-            router.events.off('routeChangeStart', beforeRouteHandler);
-        }
-        return () => {
-            window.removeEventListener('beforeunload', beforeUnloadHandler);
-            router.events.off('routeChangeStart', beforeRouteHandler);
-        };
-    }, [unsavedChanges, router]);
-
 
     useEffect(() => {
         ifLocalStorageSetState('postText', setValue)
