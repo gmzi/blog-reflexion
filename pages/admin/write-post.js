@@ -47,23 +47,18 @@ export default function WritePost() {
     }, [])
 
     useEffect(() => {
-        const unsavedChangesOnForm = checkUnsavedChangesOnForm('postAuthor','postDescription')
-        if (unsavedChangesOnForm){
-            setUnsavedChanges(true)
-        }
-
         const unsavedChangesOnEditor = checkUnsavedChangesOnEditor('postText', placeholder)
         if (unsavedChangesOnEditor){
             setUnsavedChangesOnValue(true)
         }
-    }, [unsavedChanges, unsavedChangesOnValue])
+    }, [unsavedChangesOnValue])
 
-    // useEffect(() => {
-    //     const unsavedChangesOnForm = checkUnsavedChangesOnForm('postAuthor','postDescription')
-    //     if (unsavedChangesOnForm){
-    //         setUnsavedChanges(true)
-    //     }
-    // }, [unsavedChanges])
+    useEffect(() => {
+        const unsavedChangesOnForm = checkUnsavedChangesOnForm('postAuthor','postDescription')
+        if (unsavedChangesOnForm){
+            setUnsavedChanges(true)
+        }
+    }, [unsavedChanges])
 
     const handleData = (data) => {
         setLocalStorageAndState('postText', data, setValue)
