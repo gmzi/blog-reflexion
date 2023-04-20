@@ -11,9 +11,10 @@ import { data, text } from "../../lib/data";
 import Alert from "../../components/alert";
 import Link from 'next/link';
 import styles from '../../styles/dashboard.module.css'
-import { ifLocalStorageSetState } from "../../lib/local-store";
+import { checkLocalToRemoteOnEditor, ifLocalStorageSetState } from "../../lib/local-store";
 import { setLocalStorageAndState } from "../../lib/local-store";
 import { cleanLocalStorage } from "../../lib/local-store";
+import { checkLocalToRemoteOnForm } from '../../lib/local-store';
 import {checkUnsavedChanges } from "../../lib/local-store";
 import { useRouter } from 'next/router';
 
@@ -42,6 +43,16 @@ export default function EditPost({ post }) {
     }, [])
 
     useEffect(() => {
+        const unsavedChangesInForm = checkLocalToRemoteOnForm('edit-postTitle',
+        'edit-postAuthor',
+        'edit-postDescription', post)
+        if (unsavedChangesInForm){
+            setUnsavedChanges(true)
+        }
+        const unsavedChangesOnEditor = checkLocalToRemoteOnEditor('edit-postText', post)
+        if (unsavedChangesOnEditor){
+            setUnsavedChangesOnValue(true)
+        }
     }, [unsavedChanges, unsavedChangesOnValue])
 
     const handleData = (data) => {

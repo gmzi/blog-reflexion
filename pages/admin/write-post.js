@@ -18,19 +18,21 @@ import { useRouter } from "next/router";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const SAVE_TOKEN = process.env.NEXT_PUBLIC_SAVE_TOKEN;
 
-export default function WritePost() {
+const textGuides = {
+    title: text.writePost.title,
+    body: text.writePost.body
+}
 
-    const textGuides = {
-        title: text.writePost.title,
-        body: text.writePost.body
-    }
-    
+export default function WritePost() {
     const { data: session } = useSession()
     const [value, setValue] = useState(`${textGuides.title} \n ${textGuides.body}`);
+    const [unsavedChangesOnValue, setUnsavedChangesOnValue] = useState()
     const [authorName, setAuthorName] = useState()
     const [description, setDescription] = useState()
     const [status, setStatus] = useState();
     const [published, setPublished] = useState();
+    const [unsavedChanges, setUnsavedChanges] = useState()
+    const {asPath} = useRouter()
 
     useEffect(() => {
         ifLocalStorageSetState('postText', setValue)
@@ -38,25 +40,26 @@ export default function WritePost() {
         ifLocalStorageSetState('postDescription', setDescription)
     }, [])
 
+    useEffect(() => {
+    }, [unsavedChanges, unsavedChangesOnValue])
+
     const handleData = (data) => {
         setLocalStorageAndState('postText', data, setValue)
     }
 
     const handleFormChange = (e) => {
-        setUnsavedChanges(true)
         const authorName = e.target.form.author.value;
         const description = e.target.form.description.value;
         setLocalStorageAndState('postAuthor', authorName, setAuthorName)
         setLocalStorageAndState('postDescription', description, setDescription)
+        setUnsavedChanges(true)
     }
-
 
     function cancelAction() {
         setStatus(null)
     }
 
-    const handlePublish = async (e) => {
-        e.preventDefault()
+    const publishPost = async (value, authorName, description) => {
 
         const rawData = {
             fileContent: value,
@@ -123,6 +126,11 @@ export default function WritePost() {
         return
     }
 
+    const handlePublish = () => {
+        e.preventDefault()
+        publishPost(value, authorName, description)
+    }
+
     if (session) {
 
         return (
@@ -142,11 +150,11 @@ export default function WritePost() {
                                     
                                     <Editor postBody={value} handleData={handleData}/>
 
-                                    <form onChange={handleFormChange} encType="multipart/form-data">
+                                    <form encType="multipart/form-data">
                                         <label htmlFor="author">{text.addPostForm.authorName}</label>
-                                        <input type="text" name="author" placeholder={`(${text.addPostForm.optional})`} value={authorName} />
+                                        <input type="text" name="author" placeholder={text.addPostForm.authorPlaceholder} value={authorName} onChange={handleFormChange} />
                                         <label htmlFor="description">{text.addPostForm.description}</label>
-                                        <textarea id="description" name="description" placeholder={`(${text.addPostForm.optional})`} value={description} />
+                                        <textarea id="description" name="description" placeholder={`(${text.addPostForm.optional})`} value={description} onChange={handleFormChange} />
                                     </form>
                                 </div>
                                 <div className={styles.btnContainer}>
