@@ -158,7 +158,6 @@ export default function EditPost({ post }) {
                                 <textarea id="description" name="description" placeholder={`(${text.addPostForm.optional})`} value={description} onChange={handleFormChange} />
                             </form>
                             <div className={styles.btnContainer}>
-                                {/* <button className="btnPublish" onClick={handleUpdate}>{text.editor.saveChanges}</button> */}
                                 {unsavedChanges || unsavedChangesOnValue ? (
                                     <>
                                         <button className="btnPublish" onClick={handleUpdate}>{text.editor.saveChanges}</button>
