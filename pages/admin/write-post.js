@@ -26,6 +26,8 @@ const textGuides = {
 }
 
 const placeholder = `${textGuides.title} \n ${textGuides.body}`
+const authorPlaceholder = `${text.addPostForm.authorPlaceholder}`
+const descriptionPlaceholder = `${text.addPostForm.optional}`
 
 export default function WritePost() {
     const { data: session } = useSession()
@@ -49,11 +51,19 @@ export default function WritePost() {
         if (unsavedChangesOnForm){
             setUnsavedChanges(true)
         }
+
         const unsavedChangesOnEditor = checkUnsavedChangesOnEditor('postText', placeholder)
         if (unsavedChangesOnEditor){
             setUnsavedChangesOnValue(true)
         }
     }, [unsavedChanges, unsavedChangesOnValue])
+
+    // useEffect(() => {
+    //     const unsavedChangesOnForm = checkUnsavedChangesOnForm('postAuthor','postDescription')
+    //     if (unsavedChangesOnForm){
+    //         setUnsavedChanges(true)
+    //     }
+    // }, [unsavedChanges])
 
     const handleData = (data) => {
         setLocalStorageAndState('postText', data, setValue)
@@ -68,7 +78,7 @@ export default function WritePost() {
         setLocalStorageAndState('postAuthor', authorName, setAuthorName)
         setLocalStorageAndState('postDescription', description, setDescription)
         setUnsavedChanges(true)
-        if ( authorName === '' && description === ''){
+        if (authorName === '' && description === ''){
             setUnsavedChanges(false)
         }
     }
@@ -195,16 +205,16 @@ export default function WritePost() {
                                             <button className="btnPublish-disabled">{text.editor.saveChanges}</button>
                                             <button className="btnDelete-disabled">{text.editor.discardChanges}</button>    
                                         </>
-                                        )}
+                                    )}
                                 </div>
                             </>
                         )}
-                        <div className={styles.btnContainer}>
-                            <Link href='/admin/dashboard'>
-                                <a>← {text.writePost.goDashboard}</a>
-                            </Link>
-                        </div>
                     </section>
+                    <div className={styles.btnContainer}>
+                        <Link href='/admin/dashboard'>
+                            <a>← {text.writePost.goDashboard}</a>
+                        </Link>
+                    </div>
             </Layout>
             
         )
