@@ -15,7 +15,6 @@ import { ifLocalStorageSetState } from "../../lib/local-store";
 import { setLocalStorageAndState } from "../../lib/local-store";
 import { cleanLocalStorage } from "../../lib/local-store";
 import {checkUnsavedChanges } from "../../lib/local-store";
-import { checkLocalToRemote } from '../../lib/local-store';
 import { useRouter } from 'next/router';
 
 const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION;
@@ -62,7 +61,7 @@ export default function EditPost({ post }) {
         setUnsavedChanges(true)
         if ( postTitle === post.title && authorName === post.authorName && description === post.description){
             setUnsavedChanges(false)
-        } 
+        }
     }
 
     function cancelAction() {
