@@ -13,6 +13,8 @@ import Editor from "../../components/editor";
 import { ifLocalStorageSetState } from "../../lib/local-store";
 import { setLocalStorageAndState } from "../../lib/local-store";
 import { cleanLocalStorage } from "../../lib/local-store";
+import { checkUnsavedChangesOnForm } from "../../lib/local-store";
+import { checkUnsavedChangesOnEditor } from "../../lib/local-store";
 import { useRouter } from "next/router";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -23,9 +25,11 @@ const textGuides = {
     body: text.writePost.body
 }
 
+const placeholder = `${textGuides.title} \n ${textGuides.body}`
+
 export default function WritePost() {
     const { data: session } = useSession()
-    const [value, setValue] = useState(`${textGuides.title} \n ${textGuides.body}`);
+    const [value, setValue] = useState(placeholder);
     const [unsavedChangesOnValue, setUnsavedChangesOnValue] = useState()
     const [authorName, setAuthorName] = useState()
     const [description, setDescription] = useState()
@@ -41,10 +45,21 @@ export default function WritePost() {
     }, [])
 
     useEffect(() => {
+        const unsavedChangesOnForm = checkUnsavedChangesOnForm('postAuthor','postDescription')
+        if (unsavedChangesOnForm){
+            setUnsavedChanges(true)
+        }
+        const unsavedChangesOnEditor = checkUnsavedChangesOnEditor('postText', placeholder)
+        if (unsavedChangesOnEditor){
+            setUnsavedChangesOnValue(true)
+        }
     }, [unsavedChanges, unsavedChangesOnValue])
 
     const handleData = (data) => {
         setLocalStorageAndState('postText', data, setValue)
+        if (data === placeholder) {
+            setUnsavedChangesOnValue(false)
+        }
     }
 
     const handleFormChange = (e) => {
@@ -53,6 +68,9 @@ export default function WritePost() {
         setLocalStorageAndState('postAuthor', authorName, setAuthorName)
         setLocalStorageAndState('postDescription', description, setDescription)
         setUnsavedChanges(true)
+        if ( authorName === '' && description === ''){
+            setUnsavedChanges(false)
+        }
     }
 
     function cancelAction() {
@@ -116,6 +134,7 @@ export default function WritePost() {
             setStatus({ alert: "messageAlert", message: `${text.writePost.postPublished}` })
             setUnsavedChanges(false)
             setPublished(true)
+            setUnsavedChangesOnValue(false)
             cleanLocalStorage('postText')
             cleanLocalStorage('postAuthor')
             cleanLocalStorage('postDescription')
@@ -126,29 +145,37 @@ export default function WritePost() {
         return
     }
 
-    const handlePublish = () => {
+    const handlePublish = (e) => {
         e.preventDefault()
         publishPost(value, authorName, description)
     }
 
-    if (session) {
+    const handleDiscardChanges = () => {
+        cleanLocalStorage('postText')
+        cleanLocalStorage('postAuthor')
+        cleanLocalStorage('postDescription')
+        setStatus({ alert: "messageAndRefresh-Discard", message: `${text.editPost.changesHaveBeenDiscarded}`})
+    }
 
+    const alertToDiscard = () => {
+        setStatus({ alert: "discardChanges", message: `${text.editPost.confirmDiscardChanges}`})
+    }
+
+    if (session) {
         return (
             <Layout home dashboard>
                 <Head>
                     <title>{data.title} - {text.writePost.writePost}</title>
                 </Head>
                 <Header />
-                <section>
-                    <h2>{text.writePost.newPost}</h2>
-                        {!published ? (
-                            <div className={`${styles.parent}`}>
-                                {status ? (
-                                    <Alert data={status} cancelAction={cancelAction} downloadFile={undefined} deletePost={undefined} resetCounter={undefined} />
-                                ) : null}
-                                <div>
-                                    
-                                    <Editor postBody={value} handleData={handleData}/>
+                    <section>
+                        <h2>{text.writePost.newPost}</h2>
+                        {status ? (
+                            <Alert data={status} cancelAction={cancelAction} downloadFile={undefined} deletePost={undefined} resetCounter={undefined} url={asPath} discardChanges={handleDiscardChanges} />
+                        ):(
+                            <>
+                                <div>    
+                                    <Editor postBody={value} handleData={handleData} parentUnsavedChanges={unsavedChangesOnValue} setParentUnsavedChanged={setUnsavedChangesOnValue}/>
 
                                     <form encType="multipart/form-data">
                                         <label htmlFor="author">{text.addPostForm.authorName}</label>
@@ -158,19 +185,28 @@ export default function WritePost() {
                                     </form>
                                 </div>
                                 <div className={styles.btnContainer}>
-                                    <button className="btnPublish" onClick={handlePublish}>{text.writePost.publish}</button>
+                                    {unsavedChanges || unsavedChangesOnValue ? (
+                                        <>
+                                            <button className="btnPublish" onClick={handlePublish}>{text.editor.saveChanges}</button>
+                                            <button className="btnDelete" onClick={alertToDiscard}>{text.editor.discardChanges}</button>    
+                                        </>
+                                        ) : (
+                                        <>  
+                                            <button className="btnPublish-disabled">{text.editor.saveChanges}</button>
+                                            <button className="btnDelete-disabled">{text.editor.discardChanges}</button>    
+                                        </>
+                                        )}
                                 </div>
-                            </div>
-                        ) : (
-                            <Alert data={status} cancelAction={cancelAction} downloadFile={undefined} deletePost={undefined} resetCounter={undefined} />
+                            </>
                         )}
                         <div className={styles.btnContainer}>
                             <Link href='/admin/dashboard'>
                                 <a>← {text.writePost.goDashboard}</a>
                             </Link>
                         </div>
-                </section >
-            </Layout >
+                    </section>
+            </Layout>
+            
         )
     }
 
