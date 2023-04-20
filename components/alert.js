@@ -3,7 +3,7 @@ import styles from "./alert.module.css"
 import { text } from "../lib/data"
 
 
-export default function Alert({ data, cancelAction, downloadFile, deletePost, resetCounter, url }) {
+export default function Alert({ data, cancelAction, downloadFile, deletePost, resetCounter, url, discardChanges }) {
 
     function handleCancel() {
         if (data.alert === "titleAlert") {
@@ -24,6 +24,10 @@ export default function Alert({ data, cancelAction, downloadFile, deletePost, re
 
     function handleDelete() {
         deletePost(data.id, data.name)
+    }
+
+    function handleDiscardChanges(){
+        discardChanges()
     }
 
     if (data.alert === "resetAlert") {
@@ -52,6 +56,20 @@ export default function Alert({ data, cancelAction, downloadFile, deletePost, re
                         <button onClick={handleCancel}>{text.alert.cancel}</button>
                         <button onClick={handleDownload}>{text.alert.downloadPost}</button>
                         <button className="btnDelete" onClick={handleDelete}>{text.alert.deletePost}</button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    if (data.alert === "discardChanges") {
+        return (
+            <div className={styles.alert}>
+                <div className="alertContainer">
+                    <h4>{data.message}</h4>
+                    <div className={styles.btnContainer}>
+                        <button onClick={handleCancel}>{text.alert.keepEditing}</button>
+                        <button className="btnDelete" onClick={handleDiscardChanges}>{text.alert.discardChanges}</button>
                     </div>
                 </div>
             </div>

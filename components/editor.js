@@ -17,10 +17,10 @@ const MDEditor = dynamic(
     },
 );
 // ------------------------------------------------------------ 
-export default function Editor({ postBody, handleData }) {
+export default function Editor({ postBody, handleData, parentUnsavedChanges, setParentUnsavedChanged }) {
     const [value, setValue] = useState()
     const router = useRouter()
-    const [unsavedChanges, setUnsavedChanges] = useState();
+    const [unsavedChanges, setUnsavedChanges] = useState(parentUnsavedChanges);
     const [mounted, setMounted] = useState(false)
     const {resolvedTheme} = useTheme()
 
@@ -58,6 +58,7 @@ export default function Editor({ postBody, handleData }) {
 
     const handleChange = (e) => {
         setUnsavedChanges(true)
+        setParentUnsavedChanged(true)
         setValue(e)
         handleData(e)
         return;

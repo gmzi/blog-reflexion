@@ -14,6 +14,7 @@ import styles from '../../styles/dashboard.module.css'
 import { ifLocalStorageSetState } from "../../lib/local-store";
 import { setLocalStorageAndState } from "../../lib/local-store";
 import { cleanLocalStorage } from "../../lib/local-store";
+import {checkUnsavedChanges } from "../../lib/local-store";
 import { useRouter } from 'next/router';
 
 const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION;
@@ -29,6 +30,7 @@ export default function EditPost({ post }) {
     const [authorName, setAuthorName] = useState(post.authorName)
     const [description, setDescription] = useState(post.description)
     const [status, setStatus] = useState()
+    const [unsavedChanges, setUnsavedChanges] = useState(false)
     const {asPath} = useRouter()
 
     useEffect(() => {
@@ -38,11 +40,16 @@ export default function EditPost({ post }) {
         ifLocalStorageSetState('edit-postDescription', setDescription)
     }, [])
 
+    useEffect(() => {
+        checkUnsavedChanges('edit-postText', 'edit-postTitle', 'edit-postAuthor', 'edit-postDescription', setUnsavedChanges)
+    }, [unsavedChanges])
+
     const handleData = (data) => {
         setLocalStorageAndState('edit-postText', data, setValue)
     }
 
     const handleFormChange = (e) => {
+        setUnsavedChanges(true)
         const authorName = e.target.form.author.value;
         const description = e.target.form.description.value;
         const postTitle = e.target.form.title.value;
@@ -106,6 +113,10 @@ export default function EditPost({ post }) {
         setStatus({ alert: "messageAndRefresh-Discard", message: `${text.editPost.changesHaveBeenDiscarded}`})
     }
 
+    const alertToDiscard = () => {
+        setStatus({ alert: "discardChanges", message: `${text.editPost.confirmDiscardChanges}`})
+    }
+
     if (session) {
         return (
             <Layout home dashboard>
@@ -116,10 +127,10 @@ export default function EditPost({ post }) {
                 <section>
                     <h2>{text.editPost.editPost}</h2>
                     {status ? (
-                        <Alert data={status} cancelAction={cancelAction} downloadFile={undefined} deletePost={undefined} resetCounter={undefined} url={asPath} />
+                        <Alert data={status} cancelAction={cancelAction} downloadFile={undefined} deletePost={undefined} resetCounter={undefined} url={asPath} discardChanges={handleDiscardChanges} />
                     ) : (
                         <div>
-                            <Editor postBody={value} handleData={handleData}/>
+                            <Editor postBody={value} handleData={handleData} parentUnsavedChanges={unsavedChanges} setParentUnsavedChanged={setUnsavedChanges}/>
 
                             <form encType="multipart/form-data">
                                 <label htmlFor="title">{text.addPostForm.title}</label>
@@ -131,7 +142,12 @@ export default function EditPost({ post }) {
                             </form>
                             <div className={styles.btnContainer}>
                                 <button className="btnPublish" onClick={handleUpdate}>{text.editor.saveChanges}</button>
-                                <button className="btnDelete" onClick={handleDiscardChanges}>{text.editor.discardChanges}</button>
+                                {unsavedChanges ? (
+                                    <button className="btnDelete" onClick={alertToDiscard}>{text.editor.discardChanges}</button>    
+                                ) :(
+                                    <button className="btnDelete-disabled">{text.editor.discardChanges}</button>    
+                                )}
+                                
                             </div>
                         </div>
                     )

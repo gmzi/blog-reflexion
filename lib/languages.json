@@ -42,7 +42,9 @@
             "youMight": "tal vez quieras descargar una copia de este post, para tener por las dudas",
             "downloadPost": "Descargar post",
             "deletePost": "Eliminar post",
-            "ok": "ok"
+            "ok": "ok",
+            "keepEditing": "continuar editando",
+            "discardChanges":"Descartar los cambios"
         },
         "writePost": {
             "loading": "Cargando el editor...",
@@ -70,6 +72,7 @@
             "refreshIndex": "Refrescar Index",
             "refresh": "Refrescar para volver a la version guardada",
             "noModifications": "no hay cambios",
+            "confirmDiscardChanges": "seguro que deseas descartar los cambios?",
             "changesHaveBeenSaved": "cambios guardados",
             "changesHaveBeenDiscarded": "los cambios se han descartado",
             "savingChanges": "guardando los cambios... "
@@ -179,7 +182,9 @@
             "youMight": "you might want to download a copy of this post for your records",
             "downloadPost": "Download Post",
             "deletePost": "Delete Post",
-            "ok": "ok"
+            "ok": "ok",
+            "keepEditing": "keep editing",
+            "discardChanges":"Discard changes"
         },
         "writePost": {
             "loading": "Loading editor...",
@@ -207,6 +212,7 @@
             "refreshIndex": "refresh index page",
             "refresh": "Refresh",
             "noModifications": "no modifications made",
+            "confirmDiscardChanges": "sure you want to discard changes?",
             "changesHaveBeenSaved": "changes have been saved",
             "changesHaveBeenDiscarded": "changes have been discarded",
             "savingChanges": "saving changes... "
