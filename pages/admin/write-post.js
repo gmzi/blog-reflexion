@@ -7,6 +7,8 @@ import Link from "next/link"
 import { data } from "../../lib/data"
 import Alert from '../../components/alert'
 import Restricted from "../../components/restricted";
+import MetadataForm from "../../components/forms/metadataForm";
+import ImagesUploadForm from "../../components/forms/imagesUploadForm";
 import { text } from '../../lib/data'
 import styles from '../../styles/dashboard.module.css'
 import Editor from "../../components/editor";
@@ -16,6 +18,7 @@ import { cleanLocalStorage } from "../../lib/local-store";
 import { checkUnsavedChangesOnForm } from "../../lib/local-store";
 import { checkUnsavedChangesOnEditor } from "../../lib/local-store";
 import { useRouter } from "next/router";
+import { generateBoundaryString } from "../../lib/boundaryString";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const SAVE_TOKEN = process.env.NEXT_PUBLIC_SAVE_TOKEN;
@@ -68,6 +71,7 @@ export default function WritePost() {
     }
 
     const handleFormChange = (e) => {
+        e.preventDefault()
         const authorName = e.target.form.author.value;
         const description = e.target.form.description.value;
         setLocalStorageAndState('postAuthor', authorName, setAuthorName)
@@ -166,6 +170,31 @@ export default function WritePost() {
         setStatus({ alert: "discardChanges", message: `${text.editPost.confirmDiscardChanges}`})
     }
 
+    const handleImageFormChange = (e) => {
+        e.preventDefault()
+        console.log('hiiiii')
+    }
+
+    const handleImageFormSubmit = async (e) => {
+        e.preventDefault();
+        const image1 = e.target.elements.image1.files[0];
+        const formData = new FormData();
+        formData.append('file', image1)
+        const boundaryString = generateBoundaryString()
+        const options = {
+            method: 'POST', 
+            headers: {
+                'Content-Type': `multipart/form-data; boundary=${boundaryString}`, 
+                'Authorization': `Bearer ${SAVE_TOKEN}`
+            },
+            body: `${image1}\r\n--${boundaryString}--`,
+        }
+        const upload = await fetch(`${BASE_URL}/images/upload`, options)
+        console.log(upload)
+
+
+    }
+
     if (session) {
         return (
             <Layout home dashboard>
@@ -182,12 +211,9 @@ export default function WritePost() {
                                 <div>    
                                     <Editor postBody={value} handleData={handleData} parentUnsavedChanges={unsavedChangesOnValue} setParentUnsavedChanged={setUnsavedChangesOnValue}/>
 
-                                    <form encType="multipart/form-data">
-                                        <label htmlFor="author">{text.addPostForm.authorName}</label>
-                                        <input type="text" name="author" placeholder={text.addPostForm.authorPlaceholder} value={authorName} onChange={handleFormChange} />
-                                        <label htmlFor="description">{text.addPostForm.description}</label>
-                                        <textarea id="description" name="description" placeholder={`(${text.addPostForm.optional})`} value={description} onChange={handleFormChange} />
-                                    </form>
+                                    <ImagesUploadForm/>
+                                    
+                                    <MetadataForm handleChange={handleFormChange} authorName={authorName} description={description}/>
                                 </div>
                                 <div className={styles.btnContainer}>
                                     {unsavedChanges || unsavedChangesOnValue ? (

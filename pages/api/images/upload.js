@@ -1,4 +1,14 @@
 import { v2 as cloudinary} from 'cloudinary'
+import middleware from '../../../middleware/middleware';
+import nextConnect from 'next-connect';
+import HttpStatus from 'http-status-codes';
+import busboy from 'busboy';
+
+
+const BASE_URL = process.env.BASE_URL;
+const SAVE_TOKEN = process.env.SAVE_TOKEN;
+const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION;
+const REVALIDATE_TOKEN = process.env.REVALIDATE_TOKEN;
 
 const CLOUDINARY_CLOUD_NAME= process.env.CLOUDINARY_CLOUD_NAME;
 const CLOUDINARY_API_KEY= process.env.CLOUDINARY_API_KEY;
@@ -10,39 +20,56 @@ cloudinary.config({
     api_secret: CLOUDINARY_API_SECRET
 });
 
-export default async function handler(req, res) {
-
-    const image = 'https://pbs.twimg.com/profile_images/1623905047204577282/naEiBKDQ_400x400.jpg';
-
-    const result = await cloudinary.uploader.upload(image, {folder: 'blog-reflexion/logos'});
-    console.log(result)
-
-    /**
-    {
-        asset_id: '15571c2fbe2e9bc402b7d8fb2f31eeaa',
-        public_id: 'blog-reflexion/logos/nloo0aq1hbpl9fhlnpx0',
-        version: 1682081649,
-        version_id: '34de0099d32ab8347fe47ad945aeb236',
-        signature: '5f954b535b3cf7780a7df2a12cb79b4646057a14',
-        width: 400,
-        height: 400,
-        format: 'jpg',
-        resource_type: 'image',
-        created_at: '2023-04-21T12:54:09Z',
-        tags: [],
-        bytes: 26186,
-        type: 'upload',
-        etag: '3a89d8d3f01acae635172e4d10d54bc1',
-        placeholder: false,
-        url: 'http://res.cloudinary.com/imagesgmzi/image/upload/v1682081649/blog-reflexion/logos/nloo0aq1hbpl9fhlnpx0.jpg',
-        secure_url: 'https://res.cloudinary.com/imagesgmzi/image/upload/v1682081649/blog-reflexion/logos/nloo0aq1hbpl9fhlnpx0.jpg',
-        folder: 'blog-reflexion/logos',
-        original_filename: 'naEiBKDQ_400x400',
-        api_key: '926558468899168'
+export const config = {
+    api: {
+        bodyParser: false
     }
-     **/
-    
-    res.status(200).json({ name: 'John Doe' })
+}
 
+export default async function handler(req, res){
+    try{
+        const bb = busboy({headers: req.headers})
+        bb.on('file', (fieldname, file, filename, encoding, mimetype) => {
+            const chunks = [];
+            file.on('data', (chunk) => {
+                chunks.push(chunk);
+            });
+            file.on('end', async () => {
+                const buffer = Buffer.concat(chunks)
+                const image = await new Promise((resolve, reject) => {
+                    cloudinary.uploader.upload_stream({folder: 'blog-reflexion/logos'},
+                    (error, result) => {
+                        if (error){
+                            // reject(error);
+                            res.status(500).json({error: error.message})
+                            reject(error)
+                        }
+                        resolve(result)
+                    })
+                    .end(buffer)
+                });
+                const metadata =
+                {
+                    asset_id: image.asset_id,                   
+                    public_id: image.public_id,
+                    width: image.width,
+                    height: image.height,
+                    format: image.format,
+                    created_at: image.created_at, 
+                    tags: image.tags,
+                    bytes: image.bytes,
+                    secure_url: image.secure_url,
+                }
+                return res.status(200).json({metadata})
+            })
+        })
+        bb.on('finish', () => {
+            // console.log('all done')
+            return;
+        })
+        req.pipe(bb)
+    } catch(e){
+        res.status(500).json({error: e.message})
+    }
 }
 
