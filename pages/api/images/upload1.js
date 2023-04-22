@@ -28,16 +28,10 @@ handler.post(async (req, res) => {
     try{
         const files = req.files;
         const body = req.body
-
-        const imageThing = files.image1._writeStream
-        
-
-
+        console.log('----------------------------------------')
         console.log(files)
         console.log(body)
 
-        console.log('----------------------------------------')
-        console.log(imageThing)
         const image = await new Promise((resolve, reject) => {
             cloudinary.uploader.upload_stream({folder: 'blog-reflexion/logos'},
             (error, result) => {
@@ -46,10 +40,10 @@ handler.post(async (req, res) => {
                 }
                 resolve(result)
             })
-            .end(imageThing)
+            .end(files)
         });
 
-        console.log(image)
+        // console.log(image)
 
         res.status(HttpStatus.OK).json({});
 
