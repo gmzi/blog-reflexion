@@ -177,7 +177,6 @@ export default function WritePost() {
 
     const handleImageFormChange = (e) => {
         e.preventDefault()
-        console.log('hiiiii')
     }
 
     const handleImageFormSubmit = async (e) => {

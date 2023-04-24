@@ -34,7 +34,7 @@ export default async function handler(req, res){
             file.on('end', async () => {
                 const buffer = Buffer.concat(chunks)
                 const image = await new Promise((resolve, reject) => {
-                    cloudinary.uploader.upload_stream({folder: 'blog-reflexion/logos'},
+                    cloudinary.uploader.upload_stream({folder: 'blog-reflexion/posts'},
                     (error, result) => {
                         if (error){
                             // reject(error);

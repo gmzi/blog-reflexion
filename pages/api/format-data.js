@@ -30,7 +30,7 @@ export default async function handler(req, res) {
         let titleRaw;
 
         // spread file into storable object, detect main header and image url
-        const mainHeader = fileContent.split(/\r?\n/).filter((line) => {
+        const mainBody = fileContent.split(/\r?\n/).filter((line, i) => {
             if (line.includes('![image]')) {
                 mainImageUrlRaw = line;
                 return line
@@ -40,6 +40,20 @@ export default async function handler(req, res) {
                 return line
             }
         })
+
+        const titlePosition = fileContent.split(/\r?\n/).filter((line, i) => {
+            if (line.includes('# ')){
+                return i 
+            }
+        })
+        console.log(titlePosition)
+        return;
+
+        const {titleRav, titleIndex} = titlePosition
+
+        let imageUrlsRaw = [];
+        let textBody = '';
+
     
         // CHECK FOR NO MAIN IMAGE
         if (mainImageUrlRaw === undefined){
@@ -65,7 +79,7 @@ export default async function handler(req, res) {
         const authorName = req.body.authorName.trim()
         const description = req.body.description.trim()
         // const fileBodyOld = fileContent.split('\n').slice(2).join('\n')
-        const {fileBody, containsImages, images} = checkAndJoin(fileContent.split('\n').slice(2), urlRegex)
+        const {fileBody, containsImages, images} = checkAndJoin(fileContent.split(2), urlRegex)
 
         // CHECK FOR EMPTY BODY 
         if (!fileBody.length) {
