@@ -24,19 +24,40 @@ export default async function handler(req, res) {
         // Read incoming file
         const fileContent = req.body.fileContent;
 
-        // spread file into storable object
+        // store main image url
+        let mainImageUrlRaw;
+        let titleRaw;
+
+        // spread file into storable object, detect main header and image url
         const mainHeader = fileContent.split(/\r?\n/).filter((line) => {
+            if (line.includes('![image]')) {
+                mainImageUrlRaw = line;
+                return line
+            }
             if (line.includes('# ')) {
+                titleRaw = line;
                 return line
             }
         })
-
+    
+        // CHECK FOR NO MAIN IMAGE
+        if (mainImageUrlRaw === undefined){
+            return res.status(409).json({title: "missing"})
+        }
         // CHECK FOR NO POST TITLE
-        if (!mainHeader.length) {
+        if (titleRaw === undefined) {
             return res.status(409).json({ title: "missing" });
         }
 
-        const cleanTitle = mainHeader[0].replace(/[#*]/g, '').trim()
+        const urlRegex = /\((https?:\/\/[^\s)]+)\)/;
+        const mainImageUrlMatch = mainImageUrlRaw.match(urlRegex);
+
+        if (!mainImageUrlMatch) {
+            return res.status(500).json({title: "failed extracting image url"})
+        }
+
+        const mainImageUrl = mainImageUrlMatch[1];
+        const cleanTitle = titleRaw.replace(/[#*]/g, '').trim()
         const textTitle = cleanTitle;
         const fileName = `${cleanTitle.replace(/\s/g, '-')}`
         const date = new Date();
@@ -65,6 +86,7 @@ export default async function handler(req, res) {
         }
 
         const newPost = {
+            "image_url": mainImageUrl,
             "title": textTitle,
             "date": date,
             "author": authorName,

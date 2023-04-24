@@ -24,11 +24,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const SAVE_TOKEN = process.env.NEXT_PUBLIC_SAVE_TOKEN;
 
 const textGuides = {
+    image: text.writePost.image,
     title: text.writePost.title,
     body: text.writePost.body
 }
 
-const placeholder = `${textGuides.title} \n ${textGuides.body}`
+const placeholder = `${textGuides.image} \n ${textGuides.title} \n ${textGuides.body}`
 const authorPlaceholder = `${text.addPostForm.authorPlaceholder}`
 const descriptionPlaceholder = `${text.addPostForm.optional}`
 
@@ -107,6 +108,10 @@ export default function WritePost() {
         if (!format.ok) {
             if (format.status === 409) {
                 const errorMsg = await format.json();
+                if (errorMsg.title === "missing") {
+                    setStatus({ alert: "bodyAlert", message: `${text.writePost.missingImage}` })
+                    return
+                }
                 if (errorMsg.title === "missing") {
                     setStatus({ alert: "bodyAlert", message: `${text.writePost.missingTitle}` })
                     return

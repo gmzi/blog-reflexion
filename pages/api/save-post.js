@@ -24,7 +24,7 @@ export default async function handler(req, res) {
             return res.status(403).json({ error: "bad token" })
         }
 
-        const { title, date, author, description, fileName, body, contentHtml, lastMod } = req.body;
+        const { image_url, title, date, author, description, fileName, body, contentHtml, lastMod } = req.body;
 
         // CHECK TYPEOF DATA:
         for (let v in req.body) {
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
             }
         }
 
-        if (!title || !date || !author || !fileName || !body || !contentHtml || !lastMod) {
+        if (!image_url || !title || !date || !author || !fileName || !body || !contentHtml || !lastMod) {
             res.status(400).json({ error: "your post is missing parts, please check and try again" })
             return;
         }
@@ -41,6 +41,7 @@ export default async function handler(req, res) {
         const aptUrl = fileName.normalize("NFD").replace(/[\u0300-\u036f?=]/g, "")
 
         const newPost = {
+            image_url: image_url,
             title: title,
             date: date,
             author: author,

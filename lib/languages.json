@@ -48,6 +48,7 @@
         },
         "writePost": {
             "loading": "Cargando el editor...",
+            "image": "||IMAGEN AQUI (reemplaza todo esto con el link generado abajo)||",
             "title": "# Título aquí",
             "body": "Texto aquí",
             "writePost": "Escribir post",
@@ -55,6 +56,7 @@
             "publish": "publicar",
             "goDashboard": "tablero",
             "missingTitle": "falta el título, por favor agrega '# Tu Título' al comienzo del post",
+            "missingImage": "falta la imagen de portada, por favor generá el link abajo y luego pegálo arriba de todo en el editor",
             "titleExists": "Ya existe un posteo con este título",
             "noText": "Tu posteo no tiene texto",
             "errorFormatting": "error formateando data",
@@ -188,6 +190,7 @@
         },
         "writePost": {
             "loading": "Loading editor...",
+            "image": "||IMAGE HERE||",
             "title": "# Title here",
             "body": "Text here",
             "writePost": "write post",
@@ -195,6 +198,7 @@
             "publish": "publish",
             "goDashboard": "go dashboard",
             "missingTitle": "missing title, please add '# Your Title' at the top of your text",
+            "missingImage": "missing image, please generate an image link and paste it at the top of your text",
             "titleExists": "The title of your post already exists, please edit your title and try again",
             "noText": "Your post has no text yet",
             "errorFormatting": "error formatting data",
