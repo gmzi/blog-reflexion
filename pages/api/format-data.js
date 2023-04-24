@@ -1,5 +1,6 @@
 import { connectToDatabase } from '../../lib/mongodb';
 import { parseMdToHtml } from '../../lib/posts';
+import {checkAndJoin} from '../../lib/checkAndJoin'
 
 const SAVE_TOKEN = process.env.SAVE_TOKEN;
 
@@ -24,7 +25,7 @@ export default async function handler(req, res) {
         // Read incoming file
         const fileContent = req.body.fileContent;
 
-        // store main image url
+        // store main image url and post title
         let mainImageUrlRaw;
         let titleRaw;
 
@@ -63,7 +64,8 @@ export default async function handler(req, res) {
         const date = new Date();
         const authorName = req.body.authorName.trim()
         const description = req.body.description.trim()
-        const fileBody = fileContent.split('\n').slice(1).join('\n')
+        // const fileBodyOld = fileContent.split('\n').slice(2).join('\n')
+        const {fileBody, containsImages, images} = checkAndJoin(fileContent.split('\n').slice(2), urlRegex)
 
         // CHECK FOR EMPTY BODY 
         if (!fileBody.length) {
@@ -88,6 +90,8 @@ export default async function handler(req, res) {
         const newPost = {
             "image_url": mainImageUrl,
             "title": textTitle,
+            "contains_images": containsImages,
+            "body_images": images,
             "date": date,
             "author": authorName,
             "description": description,

@@ -24,14 +24,37 @@ export default async function handler(req, res) {
             return res.status(403).json({ error: "bad token" })
         }
 
-        const { image_url, title, date, author, description, fileName, body, contentHtml, lastMod } = req.body;
+        const { 
+            image_url, 
+            title, 
+            contains_images, 
+            body_images, 
+            date, 
+            author, 
+            description, 
+            fileName, 
+            body, 
+            contentHtml, 
+            lastMod } = req.body;
 
         // CHECK TYPEOF DATA:
-        for (let v in req.body) {
-            if (typeof req.body[v] !== 'string') {
-                return res.status(400).json({ error: "missing parts" })
-            }
+        if (typeof(image_url) !== 'string' || typeof(title) !== 'string' || typeof(date) !== 'string' 
+        || typeof(author) !== 'string' || typeof(description) !== 'string' || typeof(fileName) !== 'string' 
+        || typeof(body) !== 'string' || typeof(contentHtml) !== 'string' || typeof(lastMod) !== 'string'){
+            return res.status(400).json({ error: "wrong data types" })    
         }
+        if (typeof(contains_images) !== 'boolean'){
+            return res.status(400).json({ error: "wrong data types" })    
+        }
+        if (typeof(body_images) !== 'object'){
+            return res.status(400).json({ error: "wrong data types" })    
+        }
+        // for (let v in req.body) {
+        //     if (typeof req.body[v] !== 'string' || body_images !== 'object' || contains_images !== 'boolean') {
+        //         console.log(`${v} is a ${typeof(req.body[v])}, dummy`)
+        //         return res.status(400).json({ error: "wrong data types" })
+        //     }
+        // }
 
         if (!image_url || !title || !date || !author || !fileName || !body || !contentHtml || !lastMod) {
             res.status(400).json({ error: "your post is missing parts, please check and try again" })
@@ -43,6 +66,8 @@ export default async function handler(req, res) {
         const newPost = {
             image_url: image_url,
             title: title,
+            contains_images: contains_images,
+            body_images: body_images,
             date: date,
             author: author,
             description: description,
