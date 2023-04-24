@@ -67,7 +67,7 @@ export default async function handler(req, res) {
         const authorName = req.body.authorName.trim()
         const description = req.body.description.trim()
         // const fileBodyOld = fileContent.split('\n').slice(2).join('\n')
-        const {fileBody, containsImages, images} = checkAndJoin(postBodyRaw, urlRegex)
+        const {fileBody, containsImages, images} = checkAndJoin(postBodyRaw)
 
         // CHECK FOR EMPTY BODY 
         if (!fileBody.length) {
