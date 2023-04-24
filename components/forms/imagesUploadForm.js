@@ -7,6 +7,7 @@ import Link from 'next/link';
 import styles from '../addPostForm.module.css'
 import dashboardStyles from '../../styles/dashboard.module.css'
 import PreviewPost from '../previewPost';
+import LinkDisplay from './linkDisplay';
 import Header from '../header';
 import { grabText } from '../../lib/grabText'
 import { useSession } from 'next-auth/react';
@@ -65,12 +66,14 @@ export default function ImagesUploadForm() {
 
     return (
         <>
-        {data ? <p>{data}</p> : (     
+        {data ? <p>{<LinkDisplay url={data} state={setData}/>}</p> : (     
         <form id="myForm" method="POST" encType="multipart/form-data" onSubmit={handleSubmit}>
+            <h3>Add images</h3>
+            <p>Generate link below, copy and paste it on the editor, wherever you want the image to appear.</p>
             <input type="file" id="image1" name="file" onChange={handleFileChange} accept="image/png, image/jpeg" />
-            <input type="submit" value="Submit"/>
             <label htmlFor="caption">Caption:</label>
             <input type="text" name="caption" id="caption" placeholder='(optional)' value={caption} onChange={handleCaptionChange}/>
+            <input type="submit" value="Submit"/>
         </form> 
         )}
         </>
