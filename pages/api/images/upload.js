@@ -1,7 +1,4 @@
 import { v2 as cloudinary} from 'cloudinary'
-import middleware from '../../../middleware/middleware';
-import nextConnect from 'next-connect';
-import HttpStatus from 'http-status-codes';
 import busboy from 'busboy';
 
 
