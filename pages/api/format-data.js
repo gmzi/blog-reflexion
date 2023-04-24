@@ -28,32 +28,20 @@ export default async function handler(req, res) {
         // store main image url and post title
         let mainImageUrlRaw;
         let titleRaw;
+        const postBodyRaw = [];
 
         // spread file into storable object, detect main header and image url
-        const mainBody = fileContent.split(/\r?\n/).filter((line, i) => {
-            if (line.includes('![image]')) {
+        const mainImageAndTitle = fileContent.split(/\r?\n/).filter((line, i) => {
+            if (i == 0 && line.includes('![image]')) {
                 mainImageUrlRaw = line;
                 return line
             }
             if (line.includes('# ')) {
                 titleRaw = line;
                 return line
-            }
+            } 
+            postBodyRaw.push(line);
         })
-
-        const titlePosition = fileContent.split(/\r?\n/).filter((line, i) => {
-            if (line.includes('# ')){
-                return i 
-            }
-        })
-        console.log(titlePosition)
-        return;
-
-        const {titleRav, titleIndex} = titlePosition
-
-        let imageUrlsRaw = [];
-        let textBody = '';
-
     
         // CHECK FOR NO MAIN IMAGE
         if (mainImageUrlRaw === undefined){
@@ -79,7 +67,7 @@ export default async function handler(req, res) {
         const authorName = req.body.authorName.trim()
         const description = req.body.description.trim()
         // const fileBodyOld = fileContent.split('\n').slice(2).join('\n')
-        const {fileBody, containsImages, images} = checkAndJoin(fileContent.split(2), urlRegex)
+        const {fileBody, containsImages, images} = checkAndJoin(postBodyRaw, urlRegex)
 
         // CHECK FOR EMPTY BODY 
         if (!fileBody.length) {
