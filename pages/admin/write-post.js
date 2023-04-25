@@ -58,7 +58,8 @@ export default function WritePost() {
     }, [unsavedChangesOnValue])
 
     useEffect(() => {
-        const unsavedChangesOnForm = checkUnsavedChangesOnForm('postAuthor','postDescription')
+        const unsavedChangesOnForm = checkUnsavedChangesOnForm('postAuthor',
+        'postDescription')
         if (unsavedChangesOnForm){
             setUnsavedChanges(true)
         }
@@ -158,6 +159,7 @@ export default function WritePost() {
         } else {
             const errorMsg = await publish.json();
             setStatus({ alert: "bodyAlert", message: errorMsg.error })
+            return;
         }
         return
     }
@@ -176,10 +178,6 @@ export default function WritePost() {
 
     const alertToDiscard = () => {
         setStatus({ alert: "discardChanges", message: `${text.editPost.confirmDiscardChanges}`})
-    }
-
-    const handleImageFormChange = (e) => {
-        e.preventDefault()
     }
 
     if (session) {

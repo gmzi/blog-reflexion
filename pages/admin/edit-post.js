@@ -45,40 +45,40 @@ ${post.body}`
 
     useEffect(() => {
         ifLocalStorageSetState('edit-postText', setValue)
-        ifLocalStorageSetState('edit-postTitle', setTitle)
         ifLocalStorageSetState('edit-postAuthor', setAuthorName)
         ifLocalStorageSetState('edit-postDescription', setDescription)
     }, [])
 
     useEffect(() => {
-        const unsavedChangesInForm = checkLocalToRemoteOnForm('edit-postTitle',
-        'edit-postAuthor',
-        'edit-postDescription', post)
-        if (unsavedChangesInForm){
-            setUnsavedChanges(true)
-        }
-        const unsavedChangesOnEditor = checkLocalToRemoteOnEditor('edit-postText', post)
+        const unsavedChangesOnEditor = checkLocalToRemoteOnEditor('edit-postText', postPreview)
         if (unsavedChangesOnEditor){
             setUnsavedChangesOnValue(true)
         }
-    }, [unsavedChanges, unsavedChangesOnValue])
+    }, [unsavedChangesOnValue])
+
+    useEffect(() => {
+        const unsavedChangesOnForm = checkLocalToRemoteOnForm('edit-postAuthor',
+        'edit-postDescription', post)
+        if (unsavedChangesOnForm){
+            setUnsavedChanges(true)
+        }
+    }, [unsavedChanges])
 
     const handleData = (data) => {
         setLocalStorageAndState('edit-postText', data, setValue)
-        if (data === post.body){
+        if (data === postPreview){
             setUnsavedChangesOnValue(false)
         }
     }
 
     const handleFormChange = (e) => {
-        const postTitle = e.target.form.title.value;
+        e.preventDefault()
         const authorName = e.target.form.author.value;
         const description = e.target.form.description.value;
         setLocalStorageAndState('edit-postAuthor', authorName, setAuthorName)
         setLocalStorageAndState('edit-postDescription', description, setDescription)
-        setLocalStorageAndState('edit-postTitle', postTitle, setTitle)
         setUnsavedChanges(true)
-        if ( postTitle === post.title && authorName === post.authorName && description === post.description){
+        if (authorName === post.authorName && description === post.description){
             setUnsavedChanges(false)
         }
     }
@@ -87,13 +87,11 @@ ${post.body}`
         setStatus(null)
     }
 
-    const updatePost = async (newValues, newTitle, newAuthorName, newDescription) => {
-        if (newValues === post.body && newTitle === post.title && newAuthorName === post.authorName && newDescription === post.description) {
+    const updatePost = async (newValues, newAuthorName, newDescription) => {
+        if (newValues === postPreview && newAuthorName === post.authorName && newDescription === post.description) {
             setStatus({ alert: "bodyAlert", message: `${text.editPost.noModifications}` })
             return
         }
-
-        setStatus({ alert: "messageAlert", message: `${text.editPost.savingChanges}` })
 
         const rawData = {
             fileContent: newValues,
@@ -141,7 +139,9 @@ ${post.body}`
         updatedData.id = post.id;
         updatedData.fileName = post.fileName
 
-        const response = await fetch(`${BASE_URL}/update-post`, {
+        setStatus({ alert: "messageAlert", message: `${text.editPost.savingChanges}` })
+
+        const update = await fetch(`${BASE_URL}/update-post`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -151,29 +151,27 @@ ${post.body}`
             body: JSON.stringify(updatedData)
         })
 
-        console.log(response)
-
-        if (response.ok) {
+        if (update.ok) {
             setStatus({ alert: "messageAndRefresh", message: `${text.editPost.changesHaveBeenSaved}` })
+            setUnsavedChanges(false)
+            setUnsavedChangesOnValue(false)
             cleanLocalStorage('edit-postText')
-            cleanLocalStorage('edit-postTitle')
             cleanLocalStorage('edit-postAuthor')
             cleanLocalStorage('edit-postDescription')
         } else {
-            console.log(response.json())
             setStatus({alert: "bodyAlert", message: 'error updating'})
             return;
         }
         return;
     }
 
-    const handleUpdate = async () => {
-        updatePost(value, title, authorName, description)
+    const handleUpdate = async (e) => {
+        e.preventDefault()
+        updatePost(value, authorName, description)
     }
 
     const handleDiscardChanges = () => {
         cleanLocalStorage('edit-postText')
-        cleanLocalStorage('edit-postTitle')
         cleanLocalStorage('edit-postAuthor')
         cleanLocalStorage('edit-postDescription')
         setStatus({ alert: "messageAndRefresh-Discard", message: `${text.editPost.changesHaveBeenDiscarded}`})

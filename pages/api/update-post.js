@@ -1,16 +1,14 @@
 import { ObjectId } from "mongodb";
 import { connectToDatabase } from "../../lib/mongodb";
-import { parseMdToHtml } from '../../lib/posts';
 
 const BASE_URL = process.env.BASE_URL;
 const REVALIDATE_TOKEN = process.env.REVALIDATE_TOKEN;
 const SAVE_TOKEN = process.env.SAVE_TOKEN;
 
 export default async function handler(req, res) {
-    // if (req.method !== 'POST' || !req.body.id || !req.body.fileName) {
-    //     return res.status(400).json({ error: "bad request" })
-    // }
-
+    if (req.method !== 'POST') {
+        return res.status(400).json({ error: "request verb" })
+    }
     try {
         if (!req.headers.authorization) {
             return res.status(400).json({ error: "auth missing" })
