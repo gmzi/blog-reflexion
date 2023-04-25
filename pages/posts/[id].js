@@ -11,6 +11,7 @@ const API_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const URL = process.env.NEXT_PUBLIC_URL;
 
 export default function Post({ post }) {
+
   useEffect(() => {
     async function updateVisits() {
       const data = {
@@ -25,10 +26,12 @@ export default function Post({ post }) {
           referrerPolicy: 'no-referrer',
           body: JSON.stringify(data),
         });
-      } catch (e) {}
+      } catch (e) {
+         console.log(e)
+        }
     }
     updateVisits();
-  }, [post.id]);
+  }, []);
 
   if (!post) {
     return (
@@ -72,6 +75,7 @@ export async function getStaticProps({ params }) {
     description: post.description,
     id: post._id,
     contentHtml: post.contentHtml,
+    body: post.body,
     fileName: post.fileName,
     visits: post.visits,
     image_url: post.image_url,
