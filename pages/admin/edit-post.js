@@ -207,6 +207,8 @@ export async function getServerSideProps({ query }) {
         }
     }
 
+    console.log(post)
+
     const result = {
         authorName: post.author,
         date: post.date,
