@@ -33,6 +33,56 @@ export default async function handler(req, res){
             });
             file.on('end', async () => {
                 const buffer = Buffer.concat(chunks)
+                const image = await new Promise( async(resolve, reject) => {
+                    cloudinary.uploader.upload_stream({folder: 'blog-reflexion/posts'},
+                    (error, result) => {
+                        if (error){
+                            reject(error)
+                        } else {
+                            resolve(result)
+                        }
+                    })
+                    .end(buffer)
+                });
+                const metadata =
+                {
+                    asset_id: image.asset_id,                   
+                    public_id: image.public_id,
+                    width: image.width,
+                    height: image.height,
+                    format: image.format,
+                    created_at: image.created_at, 
+                    tags: image.tags,
+                    bytes: image.bytes,
+                    secure_url: image.secure_url,
+                }
+                res.status(200).json({metadata})
+            })
+        })
+
+        // bb.on('finish', () => {
+        //     return;
+        // })
+
+        req.pipe(bb)
+
+    } catch(e){
+        res.status(500).json({error: e.message})
+    }
+}
+
+/*
+
+export default async function handler(req, res){
+    try{
+        const bb = busboy({headers: req.headers})
+        bb.on('file', (fieldname, file, filename, encoding, mimetype) => {
+            const chunks = [];
+            file.on('data', (chunk) => {
+                chunks.push(chunk);
+            });
+            file.on('end', async () => {
+                const buffer = Buffer.concat(chunks)
                 const image = await new Promise((resolve, reject) => {
                     cloudinary.uploader.upload_stream({folder: 'blog-reflexion/posts'},
                     (error, result) => {
@@ -62,11 +112,13 @@ export default async function handler(req, res){
         })
         bb.on('finish', () => {
             // console.log('all done')
-            // return;
+            return;
         })
         req.pipe(bb)
     } catch(e){
         res.status(500).json({error: e.message})
     }
 }
+
+*/
 

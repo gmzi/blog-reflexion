@@ -145,6 +145,8 @@ export default function WritePost() {
         })
 
         if (publish.ok) {
+            const cleanImagesFolderREq = await fetch(`${BASE_URL}/images/clean-folder`)
+            const cleanFolder = await cleanImagesFolderREq.json()
             setStatus({ alert: "messageAlert", message: `${text.writePost.postPublished}` })
             setUnsavedChanges(false)
             setPublished(true)
