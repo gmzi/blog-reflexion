@@ -6,11 +6,13 @@ export default async function handler(req, res) {
     }
 
     try {
-        await res.revalidate(`/posts/${req.query.path}`)
+        await res.revalidate_unstable(`/posts/${req.query.path}`)
         return res.json({ revalidated: true })
     } catch (err) {
         // If there was an error, Next.js will continue
         // to show the last successfully generated page
+        console.log('ERROR OON REVALIDATE POST')
+        console.log(err)
         return res.status(500).send('Error revalidating')
     }
 }
