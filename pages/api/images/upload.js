@@ -57,12 +57,12 @@ export default async function handler(req, res){
                     bytes: image.bytes,
                     secure_url: image.secure_url,
                 }
-                return res.status(200).json({metadata})
+                res.status(200).json({metadata})
             })
         })
         bb.on('finish', () => {
             // console.log('all done')
-            return;
+            // return;
         })
         req.pipe(bb)
     } catch(e){

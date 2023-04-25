@@ -1,4 +1,8 @@
 // http://localhost:3000/api/images/clean-folder
+/**Detect assets that were uploaded but are not being used in any post, nor as main images or body
+ * images. Once detected, move those assets to blog-reflexion/trash. I'm leaving them there until
+ * we test the method, empty trash folder is a todo. 
+ */
 
 import { v2 as cloudinary} from 'cloudinary'
 
@@ -15,85 +19,58 @@ cloudinary.config({
 });
 
 export default async function handler(req, res) {
-
-    const postsRequest = await fetch(`${BASE_URL}/api/retrieve-posts`);
-    if (postsRequest.status !== 200){
-        return res.status(500).json({error: "failed retrieving posts"})
-    }
-    const posts = await postsRequest.json();
-
-    const imageIdRegex = /\/([^\/]+)\.(jpg|png)/;
-    const mainImageIDS = [];
-    const bodyIDS = [];
-
-    posts.forEach((post) => {
-        const match = post.image_url.match(imageIdRegex);
-        if (match){
-            mainImageIDS.push(match[1])
-        } else {
-            mainImageIDS.push(post.image_url)
+    try {
+        // GET POSTS FROM MONGODB, EXTRACT MAIN IMAGE AND BODY IMAGES OF EACH POST
+        const postsRequest = await fetch(`${BASE_URL}/api/retrieve-posts`);
+        if (postsRequest.status !== 200){
+            return res.status(500).json({error: "failed retrieving posts"})
         }
-        if (post.contains_images){
-            post.body_images.map((id) => {
-                bodyIDS.push(id)
-            })
-        }
-    })
-
-    const allPostImageIDs = [...mainImageIDS, ... bodyIDS]
-
-    const allStoredImages = cloudinary.search.expression('folder=blog-reflexion/posts/* AND resource_type:image')
-    .sort_by('public_id', 'desc').max_results(30).execute().then(result => {
-            console.log(result)
-        })
-
-        
-    // lines.forEach(line => {
-    //     if (line.includes("![image](")){
-    //         const match = line.match(imageIdRegex)
-    //         if (match){
-    //             images.push(match[1])
-    //         } else {
-    //             images.push(line)
-    //         }
-    //     }
-    // })
-
-    // LOOP over MONGODB posts.forEach: grab image_url and if 
-    // post.contains_images
-    /**
-     * mongoDBPOSTS.forEach((post) => {
-     *  mainIMages.push(post.image_url)
-     * if (post.contains_images){
-     *    post.contains_images.map((image_id) => {
-     *      bodyImages.push(image_id)
-     *      })
-     * }
-     * 
-     * const mainImagesUrls =  mainIMAGES.forEach((image_url) => {
-     *      regex to extract id from full url
-     *  } )
-     * 
-     * const allIMAGES = [...mainImages, ...bodyImages]
-     * 
-     * CLOUDINARY images.forEach((image) => {
-     *      if (!allIMAGES.include(image)){
-     *      await cloudinary.uploader.destroy(image)
-     *      }
-     *  })
-     * })
-     * 
-    */
-
-    // TO DELETE, GRAB public_id FROM IMAGE OBJECT
-
-    // const image = 'blog-reflexion/logos/nloo0aq1hbpl9fhlnpx0';
-
-    // const result = await cloudinary.uploader.destroy(image);
-
-    // console.log(result)
+        const posts = await postsRequest.json();
     
-    res.status(200).json({ posts: posts })
+        const imageIdRegex = /\/([^\/]+)\.(jpg|png)/;
+        const mainImageIDS = [];
+        const bodyIDS = [];
+    
+        posts.forEach((post) => {
+            const match = post.image_url.match(imageIdRegex);
+            if (match){
+                mainImageIDS.push(match[1])
+            } else {
+                mainImageIDS.push(post.image_url)
+            }
+            if (post.contains_images){
+                post.body_images.map((id) => {
+                    bodyIDS.push(id)
+                })
+            }
+        })
+        const inUseImages = [...mainImageIDS, ... bodyIDS]
+
+        const assetsToTrash = [];
+
+        // GET IMAGES ON CLOUDINARY
+        const allStoredImages = await cloudinary.search.expression('folder=blog-reflexion/posts/*')
+        .sort_by('public_id', 'desc').execute().then(response => {
+                const resources = response.resources;
+                if (!resources.length){
+                    return res.status(200).json({message: "no items in folder"})
+                } 
+                resources.forEach((asset) => {
+                    if (!inUseImages.includes(asset.filename)){
+                        assetsToTrash.push(asset)
+                    }
+                })
+                assetsToTrash.forEach((asset) => {
+                    cloudinary.uploader.rename(asset.public_id, `blog-reflexion/trash/${asset.filename}`)
+                })
+                res.status(200).json({success: `${assetsToTrash.length} assets have been moved to Trash folder`})
+            })
+
+        // Promise.all([allStoredImages]).then(function() {res.status(200).json({success: `${assetsToTrash.length} assets have been moved to Trash folder`})});
+
+        } catch(e) {
+            res.status(500).json({error: e})
+         }
 
 }
 
