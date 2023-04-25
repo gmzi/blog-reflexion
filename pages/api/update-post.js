@@ -59,13 +59,15 @@ export default async function handler(req, res) {
             .updateOne(filter, updateDocument)
 
         if (update.acknowledged) {
-            const path = fileName;
+            const path = req.body.fileName;
             // REVALIDATE ON-DEMAND
             const revalidatePost = await fetch(`${BASE_URL}/api/revalidate-post?secret=${REVALIDATE_TOKEN}&path=${path}`)
             const revalidateIndex = await fetch(`${BASE_URL}/api/revalidate-index?secret=${REVALIDATE_TOKEN}`)
             if (revalidatePost.ok && revalidateIndex.ok) {
                 res.status(200).json({ message: 'success' })
             } else {
+                console.log('UPDATE FAILED------------------------------')
+                console.log(update)
                 console.log('REVALIDATION FAILED')
                 console.log(revalidatePost)
                 console.log(revalidateIndex)

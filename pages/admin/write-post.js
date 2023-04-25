@@ -93,7 +93,7 @@ export default function WritePost() {
         const rawData = {
             fileContent: value,
             authorName: authorName || "Default",
-            description: description || ""
+            description: description || " "
         }
 
         const format = await fetch(`${BASE_URL}/format-data`, {

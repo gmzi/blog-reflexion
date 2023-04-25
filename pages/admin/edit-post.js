@@ -99,7 +99,7 @@ ${post.body}`
             description: description || ""
         }
 
-        const format = await fetch(`${BASE_URL}/format-data`, {
+        const format = await fetch(`${BASE_URL}/edit-format-data`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ ${post.body}`
         }
 
         const parseUpdatedData = await format.json();
-        const updatedData = parseUpdatedData.newPost;
+        const updatedData = parseUpdatedData.updatedPost;
 
         updatedData.id = post.id;
         updatedData.fileName = post.fileName
