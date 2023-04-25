@@ -145,6 +145,7 @@ export default function WritePost() {
         })
 
         if (publish.ok) {
+            // CLEAN CLOUDINARY blog-reflexion/posts, see manual for more. Don't enable until is tested.
             // const cleanImagesFolderREq = await fetch(`${BASE_URL}/images/clean-folder`)
             // const cleanFolder = await cleanImagesFolderREq.json()
             setStatus({ alert: "messageAlert", message: `${text.writePost.postPublished}` })
@@ -179,26 +180,6 @@ export default function WritePost() {
 
     const handleImageFormChange = (e) => {
         e.preventDefault()
-    }
-
-    const handleImageFormSubmit = async (e) => {
-        e.preventDefault();
-        const image1 = e.target.elements.image1.files[0];
-        const formData = new FormData();
-        formData.append('file', image1)
-        const boundaryString = generateBoundaryString()
-        const options = {
-            method: 'POST', 
-            headers: {
-                'Content-Type': `multipart/form-data; boundary=${boundaryString}`, 
-                'Authorization': `Bearer ${SAVE_TOKEN}`
-            },
-            body: `${image1}\r\n--${boundaryString}--`,
-        }
-        const upload = await fetch(`${BASE_URL}/images/upload`, options)
-        console.log(upload)
-
-
     }
 
     if (session) {

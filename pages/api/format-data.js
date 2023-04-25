@@ -24,6 +24,9 @@ export default async function handler(req, res) {
 
         // Read incoming file
         const fileContent = req.body.fileContent;
+        const trimmedFileContent = fileContent.trimStart();
+
+
 
         // store main image url and post title
         let mainImageUrlRaw;
@@ -31,7 +34,7 @@ export default async function handler(req, res) {
         const postBodyRaw = [];
 
         // spread file into storable object, detect main header and image url
-        const mainImageAndTitle = fileContent.split(/\r?\n/).filter((line, i) => {
+        const mainImageAndTitle = trimmedFileContent.split(/\r?\n/).filter((line, i) => {
             if (i == 0 && line.includes('![image]')) {
                 mainImageUrlRaw = line;
                 return line
