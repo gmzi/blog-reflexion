@@ -40,8 +40,6 @@ export default async function handler(req, res) {
                 return line
             }
             if (i == 1 && line.includes('Figure:')){
-                console.log('line', line)
-                console.log('index', i)
                 return;
             }
             if (line.includes('# ')) {

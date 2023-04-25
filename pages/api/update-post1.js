@@ -7,11 +7,11 @@ const REVALIDATE_TOKEN = process.env.REVALIDATE_TOKEN;
 const SAVE_TOKEN = process.env.SAVE_TOKEN;
 
 export default async function handler(req, res) {
-    // if (req.method !== 'POST' || !req.body.id || !req.body.fileName) {
-    //     return res.status(400).json({ error: "bad request" })
-    // }
-
+    if (req.method !== 'POST' || !req.body.id || !req.body.newText || !req.body.fileName) {
+        return res.status(400).json({ error: "bad request" })
+    }
     try {
+
         if (!req.headers.authorization) {
             return res.status(400).json({ error: "auth missing" })
         }
@@ -23,35 +23,27 @@ export default async function handler(req, res) {
             return res.status(403).json({ error: "bad token" })
         }
 
-        const newImageUrl = req.body.image_url;
-        const newTitle = req.body.title;
-        const newContains = req.body.contains_images;
-        const newBodyImages = req.body.body_images;
-        const newAuthor = req.body.author;
-        const newDescription = req.body.description;
-        const newBody = req.body.body;
-        const newContentHtml = req.body.contentHtml;
+        if (typeof req.body.newText !== 'string') {
+            return res.status(400).json({ error: "wrong data type" })
+        }
 
-        const id = req.body.id;
-        const fileName = req.body.fileName;
+        // Make the new HTML.
+        const newContentHtml = await parseMdToHtml(req.body.newText)
 
         const updateDateObj = new Date();
         const updateDate = updateDateObj.toISOString();
 
         const { db } = await connectToDatabase();
 
-        const filter = { _id: ObjectId(id) }
+        const filter = { _id: ObjectId(req.body.id) }
 
         const updateDocument = {
             $set: {
-                image_url: newImageUrl,
-                contains_images: newContains,
-                body_images: newBodyImages,
                 contentHtml: newContentHtml,
-                body: newBody,
-                title: newTitle,
-                author: newAuthor,
-                description: newDescription,
+                body: req.body.newText,
+                title: req.body.newTitle,
+                author: req.body.newAuthorName,
+                description: req.body.newDescription,
                 lastMod: updateDate
             }
         }
@@ -61,7 +53,7 @@ export default async function handler(req, res) {
             .updateOne(filter, updateDocument)
 
         if (update.acknowledged) {
-            const path = fileName;
+            const path = req.body.fileName
             // REVALIDATE ON-DEMAND
             const revalidatePost = await fetch(`${BASE_URL}/api/revalidate-post?secret=${REVALIDATE_TOKEN}&path=${path}`)
             const revalidateIndex = await fetch(`${BASE_URL}/api/revalidate-index?secret=${REVALIDATE_TOKEN}`)

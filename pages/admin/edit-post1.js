@@ -5,8 +5,6 @@ import { useSession } from 'next-auth/react';
 import Editor from '../../components/editor';
 import Restricted from "../../components/restricted";
 import Layout from "../../components/layout";
-import ImagesUploadForm from '../../components/forms/imagesUploadForm';
-import MetadataForm from '../../components/forms/metadataForm';
 import Head from "next/head";
 import Header from "../../components/header";
 import { data, text } from "../../lib/data";
@@ -26,15 +24,9 @@ const URL = process.env.NEXT_PUBLIC_URL;
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const SAVE_TOKEN = process.env.NEXT_PUBLIC_SAVE_TOKEN;
 
-export default function EditPost({ post }) {
-
-    const postPreview = `![image](${post.image_url})
-# ${post.title}
-${post.body}`
-
-
+export default function EditPost1({ post }) {
     const { data: session } = useSession()
-    const [value, setValue] = useState(postPreview)
+    const [value, setValue] = useState(post.body)
     const [unsavedChangesOnValue, setUnsavedChangesOnValue] = useState()
     const [title, setTitle] = useState(post.title)
     const [authorName, setAuthorName] = useState(post.authorName)
@@ -87,59 +79,22 @@ ${post.body}`
         setStatus(null)
     }
 
-    const updatePost = async (newValues, newTitle, newAuthorName, newDescription) => {
-        if (newValues === post.body && newTitle === post.title && newAuthorName === post.authorName && newDescription === post.description) {
+    const updatePost = async (newText, newTitle, newAuthorName, newDescription) => {
+        if (newText === post.body && newTitle === post.title && newAuthorName === post.authorName && newDescription === post.description) {
             setStatus({ alert: "bodyAlert", message: `${text.editPost.noModifications}` })
             return
         }
 
         setStatus({ alert: "messageAlert", message: `${text.editPost.savingChanges}` })
 
-        const rawData = {
-            fileContent: newValues,
-            authorName: authorName || "Default",
-            description: description || ""
+        const newData = {
+            id: post.id,
+            fileName: post.fileName,
+            newText: newText,
+            newTitle: newTitle,
+            newAuthorName: newAuthorName,
+            newDescription: newDescription
         }
-
-        const format = await fetch(`${BASE_URL}/format-data`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${SAVE_TOKEN}`
-            },
-            referrerPolicy: 'no-referrer',
-            body: JSON.stringify(rawData)
-        })
-
-        if (!format.ok) {
-            if (format.status === 409) {
-                const errorMsg = await format.json();
-                if (errorMsg.title === "missing") {
-                    setStatus({ alert: "bodyAlert", message: `${text.writePost.missingImage}` })
-                    return
-                }
-                if (errorMsg.title === "missing") {
-                    setStatus({ alert: "bodyAlert", message: `${text.writePost.missingTitle}` })
-                    return
-                }
-                if (errorMsg.title === "duplicated") {
-                    setStatus({ alert: "bodyAlert", message: `${text.writePost.titleExists}` })
-                    return;
-                }
-                if (errorMsg.title === "body") {
-                    setStatus({ alert: "bodyAlert", message: `${text.writePost.noText}` })
-                    return;
-                }
-            }
-            setStatus({ alert: "bodyAlert", message: `${text.writePost.errorFormatting}` })
-            return;
-        }
-
-        const parseUpdatedData = await format.json();
-        const updatedData = parseUpdatedData.newPost;
-
-        updatedData.id = post.id;
-        updatedData.fileName = post.fileName
 
         const response = await fetch(`${BASE_URL}/update-post`, {
             method: 'POST',
@@ -148,11 +103,8 @@ ${post.body}`
                 'Authorization': `Bearer ${SAVE_TOKEN}`
             },
             referrerPolicy: 'no-referrer',
-            body: JSON.stringify(updatedData)
+            body: JSON.stringify(newData)
         })
-
-        console.log(response)
-
         if (response.ok) {
             setStatus({ alert: "messageAndRefresh", message: `${text.editPost.changesHaveBeenSaved}` })
             cleanLocalStorage('edit-postText')
@@ -160,9 +112,8 @@ ${post.body}`
             cleanLocalStorage('edit-postAuthor')
             cleanLocalStorage('edit-postDescription')
         } else {
-            console.log(response.json())
-            setStatus({alert: "bodyAlert", message: 'error updating'})
-            return;
+            const errorMsg = await response.json();
+            setStatus({alert: "bodyAlert", message: errorMsg})
         }
         return;
     }
@@ -198,18 +149,14 @@ ${post.body}`
                         <div>
                             <Editor postBody={value} handleData={handleData} parentUnsavedChanges={unsavedChangesOnValue} setParentUnsavedChanged={setUnsavedChangesOnValue}/>
 
-                            <ImagesUploadForm/>
-
-                            <MetadataForm handleChange={handleFormChange} authorName={authorName} description={description}/>
-
-                            {/* <form encType="multipart/form-data">
+                            <form encType="multipart/form-data">
                                 <label htmlFor="title">{text.addPostForm.title}</label>
                                 <input type="text" name="title" placeholder={text.addPostForm.title} value={title} onChange={handleFormChange} />
                                 <label htmlFor="author">{text.addPostForm.authorName}</label>
                                 <input type="text" name="author" placeholder={text.addPostForm.authorPlaceholder} value={authorName} onChange={handleFormChange} />
                                 <label htmlFor="description">{text.addPostForm.description}</label>
                                 <textarea id="description" name="description" placeholder={`(${text.addPostForm.optional})`} value={description} onChange={handleFormChange} />
-                            </form> */}
+                            </form>
                             <div className={styles.btnContainer}>
                                 {unsavedChanges || unsavedChangesOnValue ? (
                                     <>
@@ -260,6 +207,8 @@ export async function getServerSideProps({ query }) {
         }
     }
 
+    console.log(post)
+
     const result = {
         authorName: post.author,
         date: post.date,
@@ -269,10 +218,7 @@ export async function getServerSideProps({ query }) {
         body: post.body,
         fileName: post.fileName,
         visits: post.visits,
-        description: post.description,
-        body_images: post.body_images,
-        contains_images: post.contains_images,
-        image_url: post.image_url
+        description: post.description
     }
 
     return {
