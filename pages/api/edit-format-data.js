@@ -82,19 +82,6 @@ export default async function handler(req, res) {
 
         const contentHtml = await parseMdToHtml(fileBody)
 
-
-        // CHECK IF POST TITLE IS REPEATED, except for sample-file, that 
-        // will format without checking DB.
-        if (!req.body.formatOnly) {
-            const { db } = await connectToDatabase()
-            const repeatedTitle = await db
-                .collection(`${process.env.MONGODB_COLLECTION}`)
-                .findOne({ title: textTitle })
-            if (repeatedTitle) {
-                return res.status(409).json({ title: "duplicated" });
-            }
-        }
-
         const updatedPost = {
             "image_url": mainImageUrl,
             "title": textTitle,

@@ -7,13 +7,14 @@ import Restricted from "../../components/restricted";
 import Layout from "../../components/layout";
 import ImagesUploadForm from '../../components/forms/imagesUploadForm';
 import MetadataForm from '../../components/forms/metadataForm';
+import NotFound from '../../components/notFound';
 import Head from "next/head";
 import Header from "../../components/header";
 import { data, text } from "../../lib/data";
 import Alert from "../../components/alert";
 import Link from 'next/link';
 import styles from '../../styles/dashboard.module.css'
-import { checkLocalToRemoteOnEditor, ifLocalStorageSetState } from "../../lib/local-store";
+import { checkLocalToRemoteOnEditor, getPostFromLocal, ifLocalStorageSetState, savePostInLocal } from "../../lib/local-store";
 import { setLocalStorageAndState } from "../../lib/local-store";
 import { cleanLocalStorage } from "../../lib/local-store";
 import { checkLocalToRemoteOnForm } from '../../lib/local-store';
@@ -28,6 +29,12 @@ const SAVE_TOKEN = process.env.NEXT_PUBLIC_SAVE_TOKEN;
 
 export default function EditPost({ post }) {
 
+    if (!post){
+        return (
+            <NotFound/>
+        )
+    }
+
     const postPreview = `![image](${post.image_url})
 # ${post.title}
 ${post.body}`
@@ -41,12 +48,22 @@ ${post.body}`
     const [description, setDescription] = useState(post.description)
     const [status, setStatus] = useState()
     const [unsavedChanges, setUnsavedChanges] = useState()
-    const {asPath} = useRouter()
+    // const {asPath} = useRouter()
+    const router = useRouter()
+
+    const postID = post.id;
+    const queryID = router.query.id
 
     useEffect(() => {
-        ifLocalStorageSetState('edit-postText', setValue)
-        ifLocalStorageSetState('edit-postAuthor', setAuthorName)
-        ifLocalStorageSetState('edit-postDescription', setDescription)
+        // ifLocalStorageSetState(postID, queryID, 'edit-postText', setValue)
+        const localPost = getPostFromLocal(postID)
+        if (localPost){
+            setValue(localPost.text)
+            setAuthorName(localPost.author)
+            setDescription(localPost.description)
+        }
+        // ifLocalStorageSetState(postID, queryID, 'edit-postAuthor', setAuthorName)
+        // ifLocalStorageSetState(postID, queryID, 'edit-postDescription', setDescription)
     }, [])
 
     useEffect(() => {
@@ -65,7 +82,9 @@ ${post.body}`
     }, [unsavedChanges])
 
     const handleData = (data) => {
-        setLocalStorageAndState('edit-postText', data, setValue)
+        // setLocalStorageAndState(localStoredPost, data, setValue)
+        savePostInLocal(postID, data, undefined, undefined )
+        setValue(data)
         if (data === postPreview){
             setUnsavedChangesOnValue(false)
         }
@@ -75,8 +94,13 @@ ${post.body}`
         e.preventDefault()
         const authorName = e.target.form.author.value;
         const description = e.target.form.description.value;
-        setLocalStorageAndState('edit-postAuthor', authorName, setAuthorName)
-        setLocalStorageAndState('edit-postDescription', description, setDescription)
+        // setLocalStorageAndState('edit-postAuthor', authorName, setAuthorName)
+        // setLocalStorageAndState('edit-postDescription', description, setDescription)
+        savePostInLocal(postID, undefined, authorName, undefined )
+        setAuthorName(authorName)
+        savePostInLocal(postID, undefined, undefined, description )
+        setDescription(description)
+
         setUnsavedChanges(true)
         if (authorName === post.authorName && description === post.description){
             setUnsavedChanges(false)
@@ -192,7 +216,7 @@ ${post.body}`
                 <section>
                     <h2>{text.editPost.editPost}</h2>
                     {status ? (
-                        <Alert data={status} cancelAction={cancelAction} downloadFile={undefined} deletePost={undefined} resetCounter={undefined} url={asPath} discardChanges={handleDiscardChanges} />
+                        <Alert data={status} cancelAction={cancelAction} downloadFile={undefined} deletePost={undefined} resetCounter={undefined} url={router.asPath} discardChanges={handleDiscardChanges} />
                     ) : (
                         <div>
                             <Editor postBody={value} handleData={handleData} parentUnsavedChanges={unsavedChangesOnValue} setParentUnsavedChanged={setUnsavedChangesOnValue}/>

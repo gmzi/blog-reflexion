@@ -120,7 +120,8 @@
             "postPublished": "Post publicado, felicitaciones!!!!",
             "failedPublishing": "Error al intentar publicar, por favor edita tu archivo e intenta de nuevo",
             "here": "aqui",
-            "title": "título"
+            "title": "título",
+            "home": "inicio"
         },
         "previewPost": {
             "refreshIndex": "refrescar página de inicio",
@@ -262,7 +263,8 @@
             "postPublished": "Post published, congratulations!!!!",
             "failedPublishing": "Failed publishing, please edit file and try again",
             "here": "here",
-            "title": "title"
+            "title": "title",
+            "home": "home"
         },
         "previewPost": {
             "refreshIndex": "refresh index page",
