@@ -26,8 +26,6 @@ export default async function handler(req, res) {
         const fileContent = req.body.fileContent;
         const trimmedFileContent = fileContent.trimStart();
 
-
-
         // store main image url and post title
         let mainImageUrlRaw;
         let titleRaw;

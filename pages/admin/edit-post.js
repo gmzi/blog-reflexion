@@ -103,7 +103,8 @@ ${post.body}`
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${SAVE_TOKEN}`
+                'Authorization': `Bearer ${SAVE_TOKEN}`,
+                'Origin': `${BASE_URL}/pages/edit-post`
             },
             referrerPolicy: 'no-referrer',
             body: JSON.stringify(rawData)

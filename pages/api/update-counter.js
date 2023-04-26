@@ -4,9 +4,6 @@ import { connectToDatabase } from "../../lib/mongodb";
 const MONGODB_COLLECTION = process.env.MONGODB_COLLECTION;
 
 export default async function handler(req, res) {
-    // console.log('--------------------------welocome')
-    // console.log(req.body)
-    // res.status(200)
     if (req.method !== 'POST' || !req.body.id) {
         res.status(400).json({ error: "bad request" })
     }
@@ -27,6 +24,7 @@ export default async function handler(req, res) {
             res.status(502).json({ msg: "failed adding to counter" })
         }
     } catch (e) {
+
         res.status(500)
     }
 }

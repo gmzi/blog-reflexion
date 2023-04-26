@@ -66,14 +66,14 @@ export default async function handler(req, res) {
             if (revalidatePost.ok && revalidateIndex.ok) {
                 res.status(200).json({ message: 'success' })
             } else {
-                console.log('UPDATE FAILED------------------------------')
-                console.log(update)
-                console.log('REVALIDATION FAILED')
+                console.log('REVALIDATION FAILED?------------------------------')
                 console.log(revalidatePost)
                 console.log(revalidateIndex)
                 res.status(500).json({ error: "failed revalidating" })
             }
         } else {
+            console.log('UPDATE FAILED?------------------------------')
+            console.log(update)
             res.status(502).json({ error: "not acknowledged in db" })
         }
     } catch (e) {

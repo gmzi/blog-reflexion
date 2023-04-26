@@ -5,6 +5,7 @@ import {checkAndJoin} from '../../lib/checkAndJoin'
 const SAVE_TOKEN = process.env.SAVE_TOKEN;
 
 export default async function handler(req, res) {
+
     if (req.method !== 'POST') {
         return res.status(400).json({ error: "request verb" })
     }
