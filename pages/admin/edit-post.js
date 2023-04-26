@@ -181,9 +181,6 @@ export default function EditPost({ post }) {
             setUnsavedChanges(false)
             setUnsavedChangesOnValue(false)
             deletePostFromLocal(postID)
-            // cleanLocalStorage('edit-postText')
-            // cleanLocalStorage('edit-postAuthor')
-            // cleanLocalStorage('edit-postDescription')
         } else {
             setStatus({alert: "bodyAlert", message: 'error updating'})
             return;
@@ -198,8 +195,8 @@ export default function EditPost({ post }) {
 
     const handleDiscardChanges = () => {
         deletePostFromLocal(postID)
-        // setUnsavedChanges(false)
-        // setUnsavedChangesOnValue(false)
+        setUnsavedChanges(false)
+        setUnsavedChangesOnValue(false)
         setStatus({ alert: "messageAndRefresh-Discard", message: `${text.editPost.changesHaveBeenDiscarded}`})
     }
 
@@ -226,14 +223,6 @@ export default function EditPost({ post }) {
 
                             <MetadataForm handleChange={handleFormChange} authorName={authorName} description={description}/>
 
-                            {/* <form encType="multipart/form-data">
-                                <label htmlFor="title">{text.addPostForm.title}</label>
-                                <input type="text" name="title" placeholder={text.addPostForm.title} value={title} onChange={handleFormChange} />
-                                <label htmlFor="author">{text.addPostForm.authorName}</label>
-                                <input type="text" name="author" placeholder={text.addPostForm.authorPlaceholder} value={authorName} onChange={handleFormChange} />
-                                <label htmlFor="description">{text.addPostForm.description}</label>
-                                <textarea id="description" name="description" placeholder={`(${text.addPostForm.optional})`} value={description} onChange={handleFormChange} />
-                            </form> */}
                             <div className={styles.btnContainer}>
                                 {unsavedChanges || unsavedChangesOnValue ? (
                                     <>
