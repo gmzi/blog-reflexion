@@ -14,7 +14,7 @@ import { data, text } from "../../lib/data";
 import Alert from "../../components/alert";
 import Link from 'next/link';
 import styles from '../../styles/dashboard.module.css'
-import { checkLocalToRemoteOnEditor, getPostFromLocal, ifLocalStorageSetState, savePostInLocal } from "../../lib/local-store";
+import { checkLocalToRemoteOnEditor, deletePostFromLocal, getPostFromLocal, ifLocalStorageSetState, savePostInLocal } from "../../lib/local-store";
 import { setLocalStorageAndState } from "../../lib/local-store";
 import { cleanLocalStorage } from "../../lib/local-store";
 import { checkLocalToRemoteOnForm } from '../../lib/local-store';
@@ -34,19 +34,16 @@ export default function EditPost({ post }) {
             <NotFound/>
         )
     }
-
-    const postPreview = `![image](${post.image_url})
-# ${post.title}
-${post.body}`
+    const postPreview = `![image](${post.image_url})\n\n # ${post.title}\n ${post.body}`
 
 
     const { data: session } = useSession()
     const [value, setValue] = useState(postPreview)
-    const [unsavedChangesOnValue, setUnsavedChangesOnValue] = useState()
     const [title, setTitle] = useState(post.title)
     const [authorName, setAuthorName] = useState(post.authorName)
     const [description, setDescription] = useState(post.description)
     const [status, setStatus] = useState()
+    const [unsavedChangesOnValue, setUnsavedChangesOnValue] = useState()
     const [unsavedChanges, setUnsavedChanges] = useState()
     // const {asPath} = useRouter()
     const router = useRouter()
@@ -55,54 +52,57 @@ ${post.body}`
     const queryID = router.query.id
 
     useEffect(() => {
-        // ifLocalStorageSetState(postID, queryID, 'edit-postText', setValue)
         const localPost = getPostFromLocal(postID)
-        if (localPost){
-            setValue(localPost.text)
-            setAuthorName(localPost.author)
-            setDescription(localPost.description)
-        }
-        // ifLocalStorageSetState(postID, queryID, 'edit-postAuthor', setAuthorName)
-        // ifLocalStorageSetState(postID, queryID, 'edit-postDescription', setDescription)
+        if(!localPost){return}
+        const localStoredPostID = Object.keys(localPost)[0]
+        if (localPost[postID]?.text){setValue(localPost[postID].text)}
+        if (localPost[postID]?.authorName){setAuthorName(localPost[postID].authorName)}
+        if (localPost[postID]?.description){setDescription(localPost[postID].description)}
+        // if(localStoredPostID === postID){
+        //     setUnsavedChanges(true)
+        // }
     }, [])
 
     useEffect(() => {
-        const unsavedChangesOnEditor = checkLocalToRemoteOnEditor('edit-postText', postPreview)
-        if (unsavedChangesOnEditor){
+        const localDataOnEditor = getPostFromLocal(postID)
+        if (!localDataOnEditor){return}
+        if (localDataOnEditor[postID]?.text !== postPreview){
             setUnsavedChangesOnValue(true)
+        } else {
+            setUnsavedChangesOnValue(false)
         }
-    }, [unsavedChangesOnValue])
+    }, [])
 
     useEffect(() => {
-        const unsavedChangesOnForm = checkLocalToRemoteOnForm('edit-postAuthor',
-        'edit-postDescription', post)
-        if (unsavedChangesOnForm){
+        const metaDataOnLocal = getPostFromLocal(postID)
+        if (!metaDataOnLocal){return}
+        if (metaDataOnLocal[postID]?.authorName !== post.authorName || 
+            metaDataOnLocal[postID]?.description !== post.description){
             setUnsavedChanges(true)
+        } else {
+            setUnsavedChanges(false)
         }
-    }, [unsavedChanges])
+    }, [])
 
     const handleData = (data) => {
-        // setLocalStorageAndState(localStoredPost, data, setValue)
-        savePostInLocal(postID, data, undefined, undefined )
+        savePostInLocal(postID, {"text": data})
         setValue(data)
-        if (data === postPreview){
+        if (data !== postPreview){
+            setUnsavedChangesOnValue(true)
+        } else {
             setUnsavedChangesOnValue(false)
         }
     }
 
     const handleFormChange = (e) => {
-        e.preventDefault()
-        const authorName = e.target.form.author.value;
-        const description = e.target.form.description.value;
-        // setLocalStorageAndState('edit-postAuthor', authorName, setAuthorName)
-        // setLocalStorageAndState('edit-postDescription', description, setDescription)
-        savePostInLocal(postID, undefined, authorName, undefined )
-        setAuthorName(authorName)
-        savePostInLocal(postID, undefined, undefined, description )
-        setDescription(description)
-
-        setUnsavedChanges(true)
-        if (authorName === post.authorName && description === post.description){
+        const formAuthorName = e.target.form.author.value;
+        const formDescription = e.target.form.description.value;
+        savePostInLocal(postID, {"authorName": formAuthorName, "description": formDescription})
+        setAuthorName(formAuthorName)
+        setDescription(formDescription)
+        if (formAuthorName !== post.authorName || formDescription !== post.description){
+            setUnsavedChanges(true)
+        } else {
             setUnsavedChanges(false)
         }
     }
@@ -180,9 +180,10 @@ ${post.body}`
             setStatus({ alert: "messageAndRefresh", message: `${text.editPost.changesHaveBeenSaved}` })
             setUnsavedChanges(false)
             setUnsavedChangesOnValue(false)
-            cleanLocalStorage('edit-postText')
-            cleanLocalStorage('edit-postAuthor')
-            cleanLocalStorage('edit-postDescription')
+            deletePostFromLocal(postID)
+            // cleanLocalStorage('edit-postText')
+            // cleanLocalStorage('edit-postAuthor')
+            // cleanLocalStorage('edit-postDescription')
         } else {
             setStatus({alert: "bodyAlert", message: 'error updating'})
             return;
@@ -196,9 +197,9 @@ ${post.body}`
     }
 
     const handleDiscardChanges = () => {
-        cleanLocalStorage('edit-postText')
-        cleanLocalStorage('edit-postAuthor')
-        cleanLocalStorage('edit-postDescription')
+        deletePostFromLocal(postID)
+        // setUnsavedChanges(false)
+        // setUnsavedChangesOnValue(false)
         setStatus({ alert: "messageAndRefresh-Discard", message: `${text.editPost.changesHaveBeenDiscarded}`})
     }
 

@@ -1,3 +1,4 @@
+import {useState} from 'react'
 import {text} from '../../lib/data';
 
 export default function MetadataForm({handleChange, authorName, description}){
@@ -8,7 +9,7 @@ export default function MetadataForm({handleChange, authorName, description}){
     }
 
     return(
-            <form encType="multipart/form-data">
+            <form>
                 <h4>Metadata</h4>
                 <label htmlFor="author">{text.addPostForm.authorName}</label>
                 <input type="text" name="author" placeholder={text.addPostForm.authorPlaceholder} value={authorName} onChange={handleFormChange} />
