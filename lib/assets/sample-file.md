@@ -1,6 +1,8 @@
-# Sample File
+![image](replace_this_text_with_your_main_image_url)
 
-This is a sample file.
+# replace_this_text_with_your_main_title 
+
+This is a sample file. 
 
 ### Footnote sample
 
