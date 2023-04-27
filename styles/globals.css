@@ -240,13 +240,17 @@ a span {
   color: var(--color-date-def);
 }
 
-.uploadContainer {
+.uploadContainer, 
+.metadataContainer {
   border: var(--color-border);
   border-radius: 3px;
+  margin: 1em 0em;
+  padding: .5em;
 }
 
-.uploadContainer h4 {
-  text-align: center;
+.uploadContainer h4, 
+.metadataContainer h4 {
+  text-align: left;
   margin: .1em;
 }
 
