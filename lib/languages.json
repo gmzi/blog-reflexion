@@ -140,6 +140,13 @@
         "theme": {
             "dark": "oscuro",
             "light": "claro"
+        },
+        "uploadForm": {
+            "fileMissing": "adjunta una imagen desde tu compu", 
+            "fileOversize": "4MB es el tamaño máximo para las imagenes",
+            "addImages": "imagenes",
+            "docs": "para agregar imagenes a tu post, primero carga la imagen desde tu compu a este formulario, luego presiona GENERAR LINK, luego COPIAR LINK, y pegalo donde quieras en el editor.",
+            "docsCaptions": "para agregar un epígrafe, primero pega el link en el editor, luego escribe el epigrafe a continuación de la palabra Figure:"
         }
     },
     "EN": {
@@ -283,6 +290,10 @@
         "theme": {
             "dark": "dark",
             "light": "light"
+        },
+        "uploadForm": {
+            "fileMissing": "please attach an image", 
+            "fileOversize": "4MB is the max size"
         }
     }
 }

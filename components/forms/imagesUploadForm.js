@@ -25,6 +25,7 @@ export default function ImagesUploadForm() {
     const [file, setFile] = useState()
     const [caption, setCaption] = useState("")
     const [data, setData] = useState()
+    const [status, setStatus] = useState();
 
     // useEffect(() => {
     // }, [file])
@@ -43,10 +44,18 @@ export default function ImagesUploadForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
         if (!file){
-            console.log('no file selected, set status and alerts logic')
+            setStatus({ alert: "default", message: `${text.uploadForm.fileMissing}`})
             return;
         }
+
+        const fileSizeInMB = file.size / (1024 * 1024);
+        if (fileSizeInMB > 3.99){
+            setStatus({ alert: "default", message: `${text.uploadForm.fileOversize}`})
+            return;
+        }
+
         const formData = new FormData();
         formData.append("file", file);
 
@@ -62,20 +71,51 @@ export default function ImagesUploadForm() {
         const data = await upload.json();
         const imageLink = generateImageLink(data.metadata.secure_url, caption)
         setData(imageLink)
+        setFile(null)
+    }
+
+    const handleOK = () => {
+        setStatus(null)
+    }
+
+    if (status){
+        return (
+            <Alert 
+            data={status} 
+            cancelAction={handleOK} 
+            downloadFile={undefined} 
+            deletePost={undefined} 
+            resetCounter={undefined} 
+            url={undefined} 
+            discardChanges={undefined} />
+        )
     }
 
     return (
         <>
-        {data ? <p>{<LinkDisplay url={data} state={setData}/>}</p> : (     
-        <form id="myForm" method="POST" encType="multipart/form-data" onSubmit={handleSubmit}>
-            <h3>Add images</h3>
-            <p>Generate link below, copy and paste it on the editor, wherever you want the image to appear.</p>
-            <input type="file" id="image1" name="file" onChange={handleFileChange} accept="image/png, image/jpeg" />
-            <label htmlFor="caption">Caption:</label>
-            <input type="text" name="caption" id="caption" placeholder='(optional)' value={caption} onChange={handleCaptionChange}/>
-            <input type="submit" value="Submit"/>
-        </form> 
-        )}
+            {data ? <div className={"uploadContainer"}>{<LinkDisplay url={data} state={setData}/>}</div> : (   
+            <div className={"uploadContainer"}>
+                <h4>{text.uploadForm.addImages}</h4>
+                <form className={"uploadForm"} id="myForm" method="POST" encType="multipart/form-data" onSubmit={handleSubmit}>
+                    <div>
+                        <label htmlFor="image1">Image:</label>
+                        <input type="file" id="image1" name="file" onChange={handleFileChange} accept="image/png, image/jpeg"/>
+                    </div>
+                    <div>
+                        <label htmlFor="caption">Caption:</label>
+                        <input type="text" name="caption" id="caption" placeholder='(optional)' value={caption} onChange={handleCaptionChange}/>
+                    </div>
+                    <span className={"submitContainer"}>
+                        {file ? (
+
+                            <input className={"submitInput"} type="submit" value="GENERATE LINK"/>
+                        ): (
+                            <input disabled className={"submitInput-disabled"} type="submit" value="GENERATE LINK"/>
+                        )}
+                    </span>
+                </form> 
+                </div>
+                )}
         </>
     )
 }

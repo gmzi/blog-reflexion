@@ -24,7 +24,7 @@ export default function LinkDisplay({url, state}) {
     }
 
     return (
-        <div id="linkDisplay">
+        <div className={"linkDisplay"}>
             <p>{url}</p>
             <button onClick={handleClick}>Upload new image</button>
             {copied ? (

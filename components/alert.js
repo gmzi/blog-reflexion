@@ -125,4 +125,17 @@ export default function Alert({ data, cancelAction, downloadFile, deletePost, re
             </div>
         )
     }
+
+    if (data.alert === 'default'){
+        return (
+            <div>
+                <div className="alertContainer">
+                <p>{data.message}</p>
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                {/* <span><a href={url}>{text.editPost.refresh}</a></span> */}
+                <a onClick={handleCancel}>{text.alert.ok}</a>
+            </div>
+            </div>
+        )
+    }
 }
