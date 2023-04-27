@@ -40,7 +40,7 @@ export default async function handler(req, res) {
             if (i == 1 && line.includes('Figure:')){
                 return;
             }
-            if (line.includes('# ')) {
+            if (i < 5 && line.includes('# ')) {
                 titleRaw = line;
                 return line
             } 
