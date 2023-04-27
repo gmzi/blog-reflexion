@@ -91,10 +91,16 @@ export default function Dashboard({ posts }) {
         const postData = await response.json();
         // const text = `# ${postData.title}
         // ${postData.body}`
-        const text = `Description: ${postData.description}  
+        const text = `![image](${postData.image_url})
           
 # ${postData.title}  
-${postData.body}`
+${postData.body}  
+
+
+--
+Description: ${postData.description}  
+Last modified: ${postData.lastMod}
+`
         const file = new Blob([text],
             { type: 'text/plain;charset=utf-8' });
         element.href = URL.createObjectURL(file);
