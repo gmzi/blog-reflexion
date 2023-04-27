@@ -29,11 +29,6 @@ const SAVE_TOKEN = process.env.NEXT_PUBLIC_SAVE_TOKEN;
 
 export default function EditPost({ post }) {
 
-    if (!post){
-        return (
-            <NotFound/>
-        )
-    }
     const postPreview = `![image](${post.image_url})\n\n # ${post.title}\n ${post.body}`
 
 
@@ -204,6 +199,12 @@ export default function EditPost({ post }) {
         setStatus({ alert: "discardChanges", message: `${text.editPost.confirmDiscardChanges}`})
     }
 
+    if (!post){
+        return (
+            <NotFound/>
+        )
+    }
+
     if (session) {
         return (
             <Layout home dashboard>
@@ -249,7 +250,6 @@ export default function EditPost({ post }) {
             </Layout>
         )
     }
-
     return (
         <Restricted />
     )

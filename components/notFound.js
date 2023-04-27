@@ -27,7 +27,7 @@ export default function NotFound() {
                 </Head>
                 <Header />
                 <section>
-                    <h3>That's not found, sorry</h3>                    
+                    <h3>That&apos;s not found, sorry</h3>                    
                 </section>
                 <div className={styles.btnContainer}>
                     <Link href='/admin/dashboard'>
@@ -44,7 +44,7 @@ export default function NotFound() {
                 </Head>
                 <Header />
                 <section>
-                    <h3>That's not found, sorry</h3>                    
+                    <h3>That&apos;s not found, sorry</h3>                    
                 </section>
                 <div className={styles.btnContainer}>
                     <Link href='/'>
