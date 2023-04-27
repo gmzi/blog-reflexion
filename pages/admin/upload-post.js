@@ -76,8 +76,6 @@ export default function UploadPost() {
             body: JSON.stringify(rawData)
         })
 
-        console.log(response)
-
         if (!response.ok) {
             if (response.status === 409) {
                 setAlert({ alert: "titleAlert", message: `${text.addPostForm.titleDuplicate}` })

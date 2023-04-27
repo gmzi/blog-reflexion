@@ -5,7 +5,6 @@ import {checkAndJoin} from '../../lib/checkAndJoin'
 const SAVE_TOKEN = process.env.SAVE_TOKEN;
 
 export default async function handler(req, res) {
-
     if (req.method !== 'POST') {
         return res.status(400).json({ error: "request verb" })
     }
@@ -27,8 +26,6 @@ export default async function handler(req, res) {
         const fileContent = req.body.fileContent;
         const trimmedFileContent = fileContent.trimStart();
 
-
-
         // store main image url and post title
         let mainImageUrlRaw;
         let titleRaw;
@@ -43,7 +40,7 @@ export default async function handler(req, res) {
             if (i == 1 && line.includes('Figure:')){
                 return;
             }
-            if (line.includes('# ')) {
+            if (i < 5 && line.includes('# ')) {
                 titleRaw = line;
                 return line
             } 
