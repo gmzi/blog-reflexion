@@ -49,7 +49,7 @@ export default function EditPost({ post }) {
     useEffect(() => {
         const localPost = getPostFromLocal(postID)
         if(!localPost){return}
-        const localStoredPostID = Object.keys(localPost)[0]
+        // const localStoredPostID = Object.keys(localPost)[0]
         if (localPost[postID]?.text){setValue(localPost[postID].text)}
         if (localPost[postID]?.authorName){setAuthorName(localPost[postID].authorName)}
         if (localPost[postID]?.description){setDescription(localPost[postID].description)}

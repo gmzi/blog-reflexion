@@ -12,7 +12,7 @@ import ImagesUploadForm from "../../components/forms/imagesUploadForm";
 import { text } from '../../lib/data'
 import styles from '../../styles/dashboard.module.css'
 import Editor from "../../components/editor";
-import { ifLocalStorageSetState } from "../../lib/local-store";
+import { getDataFromLocal, ifLocalStorageSetState } from "../../lib/local-store";
 import { setLocalStorageAndState } from "../../lib/local-store";
 import { cleanLocalStorage } from "../../lib/local-store";
 import { checkUnsavedChangesOnForm } from "../../lib/local-store";
@@ -45,9 +45,12 @@ export default function WritePost() {
     const {asPath} = useRouter()
 
     useEffect(() => {
-        ifLocalStorageSetState('postText', setValue)
-        ifLocalStorageSetState('postAuthor', setAuthorName)
-        ifLocalStorageSetState('postDescription', setDescription)
+        const localText = getDataFromLocal('postText');
+        if(localText){setValue(localText)}
+        const localAuthor = getDataFromLocal('postAuthor');
+        if(localAuthor){setAuthorName(localAuthor)}
+        const localDescription = getDataFromLocal('postDescription')
+        if (localDescription){setDescription(localDescription)}
     }, [])
 
     useEffect(() => {
@@ -55,7 +58,7 @@ export default function WritePost() {
         if (unsavedChangesOnEditor){
             setUnsavedChangesOnValue(true)
         }
-    }, [unsavedChangesOnValue])
+    }, [])
 
     useEffect(() => {
         const unsavedChangesOnForm = checkUnsavedChangesOnForm('postAuthor',
@@ -63,7 +66,7 @@ export default function WritePost() {
         if (unsavedChangesOnForm){
             setUnsavedChanges(true)
         }
-    }, [unsavedChanges])
+    }, [])
 
     const handleData = (data) => {
         setLocalStorageAndState('postText', data, setValue)
