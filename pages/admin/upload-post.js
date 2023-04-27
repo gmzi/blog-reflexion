@@ -12,6 +12,7 @@ import { grabText } from '../../lib/grabText'
 import { useSession } from 'next-auth/react';
 import Restricted from '../../components/restricted';
 import Alert from '../../components/alert';
+import ImagesUploadForm from '../../components/forms/imagesUploadForm';
 
 
 const server_url = process.env.NEXT_PUBLIC_NEW_POST_URL;
@@ -125,7 +126,7 @@ export default function UploadPost() {
         const file = new Blob([postData],
             { type: 'text/plain;charset=utf-8' });
         element.href = URL.createObjectURL(file);
-        element.download = `sample.md`;
+        element.download = `syntax-sample.md`;
         document.body.appendChild(element);
         element.click();
     }
@@ -168,38 +169,18 @@ export default function UploadPost() {
                     <div className="guidelinesContainer">
                         <ol className="guidelines">
                             <h4>{text.addPostForm.guidelines}</h4>
-                            <p>{text.addPostForm.guidelinesP}</p>
-                            <li>{text.addPostForm.li1}
-                                <ul className={styles.codeContainer}>
-                                    <li className={styles.codeTitle}><code className={styles.code}>
-                                        # My Post Title</code></li>
-                                    <li className={styles.codeBody}><code className={styles.code}>
-                                        Lorem ipsum dolor sit amet...</code></li>
-                                </ul>
-                            </li>
-                            <li>{text.addPostForm.li2}</li>
-                            <li><strong>{text.addPostForm.image}</strong>
-                                <ul className={styles.codeContainer}>
-                                    <li className={styles.codeBody}><code className={styles.code}>
-                                        ![{text.addPostForm.myImage}](https://{text.addPostForm.myImage}-url.jpg)</code></li>
-                                </ul>
-                            </li>
-                            <li><strong>{text.addPostForm.video}</strong>
-                                <ul className={styles.codeContainer}>
-                                    <li className={styles.codeBody}><code className={styles.code}>
-                                        [![{text.addPostForm.myVideo}](https://{text.addPostForm.myImage}-url.jpg)](https://video-url)</code></li>
-                                </ul>
+                            <li>
+                                <button className="btnDownload" onClick={handleDownload}>{text.addPostForm.downloadSample}</button>
                             </li>
                             <li>
                                 <Link href="https://daringfireball.net/projects/markdown/syntax">
                                     <span>{text.addPostForm.cheatSheet} <a target="_blank">here</a></span>
                                 </Link>
                             </li>
-                            <li>
-                                <button className="btnDownload" onClick={handleDownload}>{text.addPostForm.downloadSample}</button>
-                            </li>
                         </ol>
                     </div>
+
+                    <ImagesUploadForm/>
                 </section>
                 <div className={styles.linkContainer}>
                     <Link href='/admin/dashboard'>

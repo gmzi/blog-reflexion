@@ -2,7 +2,7 @@
 
 # replace_this_text_with_your_main_title 
 
-This is a sample file. 
+This is a sample file. Replace this with your own text. Mind that main image (at the top of this file) and main title (the first title of this file) must be first, can't change that order or the parser will get confused and not work. 
 
 ### Footnote sample
 
@@ -11,7 +11,7 @@ Nulla aliquet enim tortor at auctor. Malesuada proin libero nunc consequat. Temp
 
 ### Image Sample:
 
-![buenos aires](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/ObeliscoBA2017.jpg/1024px-ObeliscoBA2017.jpg)
+![image](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/ObeliscoBA2017.jpg/1024px-ObeliscoBA2017.jpg)
 
 ### Video Sample:
 
