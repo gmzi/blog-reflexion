@@ -80,7 +80,8 @@ export default function EditPost({ post }) {
     }, [])
 
     const handleData = (data) => {
-        savePostInLocal(postID, {"text": data})
+        // savePostInLocal(postID, {"text": data})
+        savePostInLocal(postID, "text", data)
         setValue(data)
         if (data !== postPreview){
             setUnsavedChangesOnValue(true)
@@ -92,8 +93,10 @@ export default function EditPost({ post }) {
     const handleFormChange = (e) => {
         const formAuthorName = e.target.form.author.value;
         const formDescription = e.target.form.description.value;
-        savePostInLocal(postID, {"authorName": formAuthorName, "description": formDescription})
+        // savePostInLocal(postID, {"authorName": formAuthorName, "description": formDescription})
+        savePostInLocal(postID, "authorName", formAuthorName)
         setAuthorName(formAuthorName)
+        savePostInLocal(postID, "description", formDescription)
         setDescription(formDescription)
         if (formAuthorName !== post.authorName || formDescription !== post.description){
             setUnsavedChanges(true)
