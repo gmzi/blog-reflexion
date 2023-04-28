@@ -45,6 +45,7 @@ export default function EditPost({ post }) {
 
     const postID = post.id;
     const queryID = router.query.id
+    let debounceTimer;
 
     useEffect(() => {
         const localPost = getPostFromLocal(postID)
@@ -79,15 +80,24 @@ export default function EditPost({ post }) {
         }
     }, [])
 
+    
     const handleData = (data) => {
-        // savePostInLocal(postID, {"text": data})
         savePostInLocal(postID, "text", data)
         setValue(data)
-        if (data !== postPreview){
-            setUnsavedChangesOnValue(true)
-        } else {
-            setUnsavedChangesOnValue(false)
-        }
+
+        clearTimeout(debounceTimer)
+        debounceTimer = setTimeout(() => {
+            if (data !== postPreview){
+                setUnsavedChangesOnValue(true)
+            } else {
+                setUnsavedChangesOnValue(false)
+            }
+        }, 1000)
+        // if (data !== postPreview){
+        //     setUnsavedChangesOnValue(true)
+        // } else {
+        //     setUnsavedChangesOnValue(false)
+        // }
     }
 
     const handleFormChange = (e) => {
