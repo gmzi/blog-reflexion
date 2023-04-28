@@ -73,16 +73,16 @@ export default function WritePost() {
     const handleData = (data) => {
         setLocalStorageAndState('postText', data, setValue)
 
-        clearTimeout(debounceTimer)
-        debounceTimer = setTimeout(() => {
-            if (data === placeholder){
-                setUnsavedChangesOnValue(true)
-            } 
-        }, 1000)
+        // clearTimeout(debounceTimer)
+        // debounceTimer = setTimeout(() => {
+        //     if (data === placeholder){
+        //         setUnsavedChangesOnValue(true)
+        //     } 
+        // }, 1000)
 
-        // if (data === placeholder) {
-        //     setUnsavedChangesOnValue(false)
-        // }
+        if (data === placeholder) {
+            setUnsavedChangesOnValue(false)
+        }
     }
 
     const handleFormChange = (e) => {
