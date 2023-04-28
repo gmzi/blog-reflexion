@@ -44,6 +44,8 @@ export default function WritePost() {
     const [unsavedChanges, setUnsavedChanges] = useState()
     const {asPath} = useRouter()
 
+    let debounceTimer;
+
     useEffect(() => {
         const localText = getDataFromLocal('postText');
         if(localText){setValue(localText)}
@@ -70,9 +72,17 @@ export default function WritePost() {
 
     const handleData = (data) => {
         setLocalStorageAndState('postText', data, setValue)
-        if (data === placeholder) {
-            setUnsavedChangesOnValue(false)
-        }
+
+        clearTimeout(debounceTimer)
+        debounceTimer = setTimeout(() => {
+            if (data === placeholder){
+                setUnsavedChangesOnValue(true)
+            } 
+        }, 1000)
+
+        // if (data === placeholder) {
+        //     setUnsavedChangesOnValue(false)
+        // }
     }
 
     const handleFormChange = (e) => {
