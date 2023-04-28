@@ -42,7 +42,7 @@ export default function Editor({ postBody, handleData, parentUnsavedChanges, set
                 throw `Route change to "${url}" was aborted (this error can be safely ignored). See https://github.com/zeit/next.js/issues/2476.`;
             }
         };
-        if (unsavedChanges) {
+        if (parentUnsavedChanges) {
             window.addEventListener('beforeunload', beforeUnloadHandler);
             router.events.on('routeChangeStart', beforeRouteHandler);
         } else {
@@ -53,11 +53,11 @@ export default function Editor({ postBody, handleData, parentUnsavedChanges, set
             window.removeEventListener('beforeunload', beforeUnloadHandler);
             router.events.off('routeChangeStart', beforeRouteHandler);
         };
-    }, [unsavedChanges, router]);
+    }, [parentUnsavedChanges, router]);
     
 
     const handleChange = (e) => {
-        setUnsavedChanges(true)
+        // setUnsavedChanges(true)
         setParentUnsavedChanged(true)
         setValue(e)
         handleData(e)
