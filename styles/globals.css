@@ -62,6 +62,7 @@ body {
   --color-alert-background: rgba(255, 255, 255, 0.884);
   --color-url-font: rgba(255, 255, 255, 0.932);
   --color-url-background: rgba(0, 0, 0, 0.426);
+  --color-sbumitInput-border: 1px solid rgba(2, 103, 2, 0.974);
 }
 
 [data-theme='dark'] {
@@ -117,6 +118,7 @@ body {
   --color-url-font: rgba(220, 217, 217, 0.932);
   --color-url-background: rgba(0, 0, 0, 0.426);
   --color-input-background-disabled: rgba(91, 91, 91, 0.472);
+  --color-sbumitInput-border: 1px solid rgba(2, 103, 2, 0.655);
 }
 
 .logoContainer { 
@@ -342,7 +344,6 @@ button,
   border-radius: 0.3rem;
   transition: all 0.1s ease-in-out;
   background-color: var(--color-btn-background);
-  border: var(--color-btn-border);
   box-shadow: var(--color-btn-box-shadow);
 }
 
@@ -352,6 +353,7 @@ button {
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--color-btn);
+  border: var(--color-btn-border);
 }
 
 input:disabled {
@@ -366,6 +368,17 @@ button:hover,
 button:active,
 .submitInput:active {
   box-shadow: var(--color-btn-active-box-shadow);
+}
+
+.submitInput,
+.submitInput-disabled,
+.uploadForm input[type="file"]::file-selector-button{
+  border: var(--color-sbumitInput-border);
+  border-radius: 3px;
+}
+
+.uploadForm input[type="file"]::file-selector-button{
+  font-size: small;
 }
 
 .btnPreview {
@@ -429,11 +442,6 @@ button:active,
   border: var(--color-btnDownload-border);
 }
 
-/* ----------------------------- */
-
-.uploadForm input[type="file"]::file-selector-button{
-  /* border: 2px solid red; */
-}
 
 .uploadForm input[type="submit"]{
   height: 100%;
@@ -441,12 +449,9 @@ button:active,
   color: var(--color-btnUpload)
 }
 
-/* ------------------------------------------- */
 .editor {
   margin: 1rem 0rem;
 }
-
-/* ------------------------------------------- */
 
 .postHeading {
   margin: 4rem 0;
