@@ -271,39 +271,48 @@ export default function EditPost({ post }) {
 
 export async function getServerSideProps({ query }) {
 
-    const { db } = await connectToDatabase()
+    try {
 
-    const dbQuery = { _id: ObjectId(query.id) }
-    const post = await db
-        .collection(MONGODB_COLLECTION)
-        .findOne(dbQuery)
+        const { db } = await connectToDatabase()
 
-    if (!post) {
-        return {
-            props: {
-                post: false,
+        const dbQuery = { _id: ObjectId(query.id) }
+        const post = await db
+            .collection(MONGODB_COLLECTION)
+            .findOne(dbQuery)
+
+        if (!post) {
+            return {
+                props: {
+                    post: false,
+                }
             }
         }
-    }
 
-    const result = {
-        authorName: post.author,
-        date: post.date,
-        title: post.title,
-        id: post._id,
-        contentHtml: post.contentHtml,
-        body: post.body,
-        fileName: post.fileName,
-        visits: post.visits,
-        description: post.description,
-        body_images: post.body_images,
-        contains_images: post.contains_images,
-        image_url: post.image_url
-    }
+        const result = {
+            authorName: post.author,
+            date: post.date,
+            title: post.title,
+            id: post._id,
+            contentHtml: post.contentHtml,
+            body: post.body,
+            fileName: post.fileName,
+            visits: post.visits,
+            description: post.description,
+            body_images: post.body_images,
+            contains_images: post.contains_images,
+            image_url: post.image_url
+        }
 
-    return {
-        props: {
-            post: JSON.parse(JSON.stringify(result))
+        return {
+            props: {
+                post: JSON.parse(JSON.stringify(result))
+            }
+        }
+    } catch(e){
+        return {
+            props: {
+                post: false
+            }
         }
     }
 }
