@@ -361,7 +361,8 @@ input:disabled {
 }
 
 button:hover, 
-.submitInput:hover {
+.submitInput:hover,
+.uploadForm input[type="submit"]:hover {
   background-color: var(--color-btn-hover-background);
 }
 
