@@ -343,7 +343,6 @@ button,
 .submitInput {
   border-radius: 0.3rem;
   transition: all 0.1s ease-in-out;
-  background-color: var(--color-btn-background);
   box-shadow: var(--color-btn-box-shadow);
 }
 
@@ -353,6 +352,7 @@ button {
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--color-btn);
+  background-color: var(--color-btn-background);
   border: var(--color-btn-border);
 }
 
@@ -388,14 +388,22 @@ button:active,
   border: var(--color-btnPreview-border);
 }
 
+.btnPublish,
+.uploadForm input[type="submit"] {
+  background-color: var(--color-btnPublish-background);
+}
+
 .btnPublish {
   color: var(--color-btnPublish);
-  background-color: var(--color-btnPublish-background);
+}
+
+.btnPublish-disabled,
+.uploadForm input[type="submit"]:disabled {
+  background-color: var(--color-btnPublish-disabled-background);
 }
 
 .btnPublish-disabled {
   color: var(--color-btnPublish-disabled);
-  background-color: var(--color-btnPublish-disabled-background);
 }
 
 .btnPublish-disabled:hover {

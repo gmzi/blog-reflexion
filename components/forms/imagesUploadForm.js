@@ -56,6 +56,8 @@ export default function ImagesUploadForm() {
             return;
         }
 
+        setStatus({alert: "messageAlert", message: "uploading..."})
+
         const formData = new FormData();
         formData.append("file", file);
 
@@ -70,6 +72,7 @@ export default function ImagesUploadForm() {
         }
         const data = await upload.json();
         const imageLink = generateImageLink(data.metadata.secure_url, caption)
+        setStatus(null)
         setData(imageLink)
         setFile(null)
     }
